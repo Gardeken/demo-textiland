@@ -7,42 +7,104 @@
     <link rel="stylesheet" href="/index.css" />
     <title>Textiland</title>
   </head>
-  <body class="h-lvh">
-    <nav class="h-14 flex items-center">
+  <body class="relative">
+    <nav
+      class="sticky top-0 bg-white z-30 h-14 flex justify-between lg:justify-normal items-center"
+    >
       <div class="bg-black w-40 h-full" name="Logo"></div>
-      <a class="text-white bg-black px-10 py-4" href="/">Home</a>
+      <a class="lg:block hidden text-white bg-black px-10 py-4" href="/"
+        >Home</a
+      >
       <a
-        class="hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
+        class="lg:block hidden hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
         href="#aboutus"
         >Sobre nosotros</a
       >
       <a
-        class="hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
+        class="lg:block hidden hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
         href="/catalogo"
         >Catálogo</a
       >
       <a
-        class="hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
+        class="lg:block hidden hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
         href="#historia"
         >Historia</a
       >
       <a
-        class="hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
+        class="lg:block hidden hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
         href="#contactanos"
         >Contáctanos</a
       >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-8 mr-4 cursor-pointer lg:hidden block"
+        id="ham-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+        />
+      </svg>
     </nav>
+    <div class="bg-black opacity-50 z-40 h-lvh w-full top-0 fixed hidden"></div>
+    <aside class="bg-white h-lvh w-1/2 fixed top-0 z-50 -translate-x-full">
+      <div class="flex justify-between p-2 mt-4">
+        <div class="bg-black w-20 h-8"></div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-8"
+          id="x-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+          />
+        </svg>
+      </div>
+      <div class="flex flex-col mt-12 w-full">
+        <a
+          class="duration-300 hover:duration-300 hover:bg-black p-5 w-full hover:text-white"
+          href="#aboutus"
+          >Sobre nosotros</a
+        >
+        <a
+          class="duration-300 hover:duration-300 hover:bg-black p-5 w-full hover:text-white"
+          href="/catalogo"
+          >Catálogo</a
+        >
+        <a
+          class="duration-300 hover:duration-300 hover:bg-black p-5 w-full hover:text-white"
+          href="#historia"
+          >Historia</a
+        >
+        <a
+          class="duration-300 hover:duration-300 hover:bg-black p-5 w-full hover:text-white"
+          href="#contactanos"
+          >Contáctanos</a
+        >
+      </div>
+    </aside>
     <main>
       <div class="w-full mb-5 relative grid h-[30rem]">
         <img src="/tela-bg.jpg" class="w-full h-full" alt="" />
         <div class="bg-black absolute h-full w-full opacity-50"></div>
-        <h3 class="absolute place-self-center text-4xl text-white">
+        <h3 class="absolute place-self-center text-center text-4xl text-white">
           Únicos fabricantes de tela en Venezuela
         </h3>
       </div>
       <section
         id="aboutus"
-        class="grid grid-cols-3 h-[35rem] my-16 overflow-hidden"
+        class="flex flex-col lg:grid grid-cols-3 h-auto gap-5 lg:gap-0 lg:h-[35rem] my-16 overflow-hidden"
       >
         <div
           class="h-3/4 flex flex-col justify-start items-center gap-4 col-start-1 col-end-3"
@@ -61,7 +123,7 @@
           </p>
         </div>
         <video
-          class="h-3/4 self-start place-self-center"
+          class="h-96 lg:h-3/4 self-center lg:self-start place-self-center"
           autoplay
           muted
           loop
@@ -69,7 +131,10 @@
           src="/video-home.mp4"
         ></video>
       </section>
-      <section id="historia" class="p-6 w-full h-96 bg-black mb-12 text-white">
+      <section
+        id="historia"
+        class="p-6 w-full h-auto lg:h-96 bg-black mb-12 text-white"
+      >
         <h2 class="mb-8 text-4xl font-bold">Historia</h2>
         <p class="text-lg">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam
@@ -97,7 +162,7 @@
       >
         <img src="/telas-bg.png" class="absolute h-full w-full -z-20" alt="" />
         <div class="bg-black opacity-50 absolute -z-10 h-full w-full"></div>
-        <h3 class="m-6 text-4xl font-bold">
+        <h3 class="m-6 text-4xl text-center font-bold">
           Convierte tu idea en una realidad.
         </h3>
         <p class="w-4/5 mt-8 text-center text-xl">
@@ -114,7 +179,9 @@
         >
       </section>
     </main>
-    <footer class="text-white bg-black w-full h-60 p-8 flex gap-12">
+    <footer
+      class="text-white bg-black w-full h-auto lg:h-60 p-8 flex flex-col items-center lg:items-start text-center lg:text-justify lg:flex-row gap-12"
+    >
       <div class="flex flex-col gap-4">
         <h4 class="text-xl mb-4">¿Quieres contactarnos?</h4>
         <span>Correo: example@gmail.com</span>
@@ -188,5 +255,6 @@
         <span>8:00 AM - 5:00 PM</span>
       </div>
     </footer>
+    <script src="index.js"></script>
   </body>
 </html>
