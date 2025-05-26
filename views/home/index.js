@@ -24,7 +24,7 @@ async function mostrarTelas() {
               <span class="text-lg font-semibold">${tela.name}</span>
               <span>$${tela.price} / kg</span>
             </div>`;
-    a.classList.add("shadow-2xl");
+    a.classList.add("shadow-2xl", "w-48", "h-48");
     containerTelas.appendChild(a);
   }
 }
