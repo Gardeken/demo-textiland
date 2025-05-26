@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function mostrarTelas() {
   const telas = await getAllTelas();
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 7; i++) {
     const tela = telas[i];
     const a = document.createElement("a");
     a.href = `/telas?id=${tela.id}&pag=home`;
