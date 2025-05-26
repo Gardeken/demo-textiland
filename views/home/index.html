@@ -16,22 +16,22 @@
         >Home</a
       >
       <a
-        class="lg:block hidden hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
+        class="lg:block hidden hover:text-white hover:bg-black duration-300 px-10 py-4"
         href="#aboutus"
         >Sobre nosotros</a
       >
       <a
-        class="lg:block hidden hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
+        class="lg:block hidden hover:text-white hover:bg-black duration-300 px-10 py-4"
         href="/catalogo"
         >Catálogo</a
       >
       <a
-        class="lg:block hidden hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
+        class="lg:block hidden hover:text-white hover:bg-black duration-300 px-10 py-4"
         href="#historia"
         >Historia</a
       >
       <a
-        class="lg:block hidden hover:text-white hover:bg-black duration-300 hover:duration-300 px-10 py-4"
+        class="lg:block hidden hover:text-white hover:bg-black duration-300 px-10 py-4"
         href="#contactanos"
         >Contáctanos</a
       >
@@ -51,8 +51,14 @@
         />
       </svg>
     </nav>
-    <div class="bg-black opacity-50 z-40 h-lvh w-full top-0 fixed hidden"></div>
-    <aside class="bg-white h-lvh w-1/2 fixed top-0 z-50 -translate-x-full">
+    <div
+      id="BgBlack"
+      class="bg-black opacity-50 z-40 h-lvh w-full top-0 fixed hidden"
+    ></div>
+    <aside
+      id="lateralBar"
+      class="bg-white h-lvh w-1/2 fixed top-0 z-50 duration-300 -translate-x-full"
+    >
       <div class="flex justify-between p-2 mt-4">
         <div class="bg-black w-20 h-8"></div>
         <svg
@@ -61,7 +67,7 @@
           viewBox="0 0 24 24"
           stroke-width="1.5"
           stroke="currentColor"
-          class="w-8"
+          class="w-8 cursor-pointer"
           id="x-icon"
         >
           <path
@@ -72,23 +78,24 @@
         </svg>
       </div>
       <div class="flex flex-col mt-12 w-full">
+        <a class="bg-black p-5 w-full text-white" href="/">Home</a>
         <a
-          class="duration-300 hover:duration-300 hover:bg-black p-5 w-full hover:text-white"
+          class="duration-300 hover:bg-black p-5 w-full hover:text-white"
           href="#aboutus"
           >Sobre nosotros</a
         >
         <a
-          class="duration-300 hover:duration-300 hover:bg-black p-5 w-full hover:text-white"
+          class="duration-300 hover:bg-black p-5 w-full hover:text-white"
           href="/catalogo"
           >Catálogo</a
         >
         <a
-          class="duration-300 hover:duration-300 hover:bg-black p-5 w-full hover:text-white"
+          class="duration-300 hover:bg-black p-5 w-full hover:text-white"
           href="#historia"
           >Historia</a
         >
         <a
-          class="duration-300 hover:duration-300 hover:bg-black p-5 w-full hover:text-white"
+          class="duration-300 hover:bg-black p-5 w-full hover:text-white"
           href="#contactanos"
           >Contáctanos</a
         >
@@ -158,7 +165,7 @@
         <div class="bg-black w-full h-60 mb-16"></div>
       </section>
       <section
-        class="relative h-[35rem] text-white mb-16 flex flex-col justify-center items-center"
+        class="relative h-[38rem] lg:h-[35rem] text-white mb-16 flex flex-col justify-center items-center"
       >
         <img src="/telas-bg.png" class="absolute h-full w-full -z-20" alt="" />
         <div class="bg-black opacity-50 absolute -z-10 h-full w-full"></div>
@@ -174,25 +181,27 @@
         </p>
         <a
           href="/catalogo"
-          class="m-12 border-white border-[3px] p-3 duration-300 hover:duration-300 hover:bg-white hover:text-black"
+          class="m-12 border-white border-[3px] p-3 duration-300 hover:bg-white hover:text-black"
           >Conocer más</a
         >
       </section>
     </main>
     <footer
+      id="contactanos"
       class="text-white bg-black w-full h-auto lg:h-60 p-8 flex flex-col items-center lg:items-start text-center lg:text-justify lg:flex-row gap-12"
     >
       <div class="flex flex-col gap-4">
         <h4 class="text-xl mb-4">¿Quieres contactarnos?</h4>
-        <span>Correo: example@gmail.com</span>
-        <span>Telf: 0414-6547896</span>
+        <span>Correo: ventastextiland@gmail.com</span>
+        <span>Telf: 0414-133-0074</span>
+        <span>Telf: 0414-081-3469</span>
       </div>
       <div>
         <h4 class="text-xl mb-8">Nuestras redes</h4>
         <div class="flex gap-4">
           <a
             href=""
-            class="flex gap-2 text-gray-500 duration-300 hover:duration-300 hover:text-white"
+            class="flex gap-2 text-gray-500 duration-300 hover:text-white"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -204,11 +213,14 @@
               />
             </svg>
           </a>
-          <a href="">
+          <a
+            href="https://www.instagram.com/textilandvzla?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+            target="_blank"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
-              class="w-7 text-gray-500 duration-300 hover:duration-300 hover:text-white"
+              class="w-7 text-gray-500 duration-300 hover:text-white"
               viewBox="0 0 16 16"
             >
               <path
@@ -220,7 +232,7 @@
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
-              class="w-7 text-gray-500 duration-300 hover:duration-300 hover:text-white"
+              class="w-7 text-gray-500 duration-300 hover:text-white"
               viewBox="0 0 16 16"
             >
               <path
@@ -232,7 +244,7 @@
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
-              class="w-7 text-gray-500 duration-300 hover:duration-300 hover:text-white"
+              class="w-7 text-gray-500 duration-300 hover:text-white"
               viewBox="0 0 16 16"
             >
               <path
@@ -245,9 +257,8 @@
       <div class="w-64">
         <h4 class="text-xl mb-6">Visitanos</h4>
         <span class="text-xs"
-          >Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laudantium
-          labore quia quisquam voluptates fugiat, debitis hic eos impedit veniam
-          eligendi atque autem deserunt.</span
+          >Esquina de Marrón a Cuji, Edificio Broadway Nivel P.B Caracas -
+          Venezuela</span
         >
       </div>
       <div>
