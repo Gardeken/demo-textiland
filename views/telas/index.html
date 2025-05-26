@@ -3,125 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="/output.css" rel="stylesheet" />
+    <title>Telas</title>
+    <link rel="stylesheet" href="/output.css" />
     <link rel="stylesheet" href="/index.css" />
-    <title>Catálogo</title>
   </head>
-  <body>
-    <div class="grid lg:col-span-4">
-      <div
-        id="BgBlack"
-        class="bg-black opacity-50 z-40 h-lvh w-full top-0 fixed hidden"
-      ></div>
-      <aside
-        id="lateralBar"
-        class="bg-white duration-300 shadow-2xl fixed top-0 overflow-y-scroll lg:relative z-50 w-3/5 lg:w-full h-full flex flex-col -translate-x-full lg:translate-x-0"
+  <body class="grid">
+    <a id="atras" class="flex gap-1 m-8">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5"
       >
-        <div class="flex justify-between p-2 mt-2">
-          <div class="bg-black w-28 h-12"></div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-8 block lg:hidden cursor-pointer"
-            id="x-icon"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18 18 6M6 6l12 12"
-            />
-          </svg>
-        </div>
-        <div id="containerIdTelas" class="flex flex-col p-2 mt-14 w-full">
-          <h3 class="text-2xl font-bold mb-4">Telas</h3>
-          <span
-            class="p-4 duration-300 cursor-pointer hover:bg-black hover:text-white"
-            id="0"
-            >Todas</span
-          >
-          <span
-            class="p-4 duration-300 cursor-pointer hover:bg-black hover:text-white"
-            id="1"
-            >Cotton Lycra</span
-          >
-          <span
-            class="p-4 duration-300 cursor-pointer hover:bg-black hover:text-white"
-            id="2"
-            >Dry</span
-          >
-          <span
-            class="p-4 duration-300 cursor-pointer hover:bg-black hover:text-white"
-            id="3"
-            >Jersey</span
-          >
-        </div>
-        <div class="w-1/2 h-px bg-slate-500 self-center m-4"></div>
-        <h3 class="text-2xl font-bold mb-4 p-2">Rango de precios</h3>
-        <div
-          class="flex flex-col lg:flex-row gap-4 items-center justify-center mb-2"
-        >
-          <input
-            class="w-24 rounded bg-slate-700 text-white outline-none p-1"
-            id="lowPrice"
-            type="text"
-          />
-          <input
-            class="w-24 rounded bg-slate-700 text-white outline-none p-1"
-            ig="highPrice"
-            type="text"
-          />
-        </div>
-        <div class="w-1/2 h-px bg-slate-500 self-center m-4"></div>
-        <h3 class="text-2xl font-bold mb-4 p-2">Color</h3>
-      </aside>
-      <main class="grid col-start-2 col-end-5">
-        <div class="grid items-center place-items-end">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-10 m-4 cursor-pointer lg:hidden block"
-            id="ham-icon"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            />
-          </svg>
-        </div>
-        <div class="relative grid place-self-center">
-          <input
-            class="bg-slate-700 text-white lg:w-80 p-2 pl-10 m-8 outline-none rounded"
-            placeholder="Buscar productos"
-            type="text"
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 text-[#9ca3af] mt-10 ml-10 absolute"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-            />
-          </svg>
-        </div>
-        <div
-          id="container-telas"
-          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 min-h-[40rem] gap-4 mb-8 mx-4 place-items-center items-start"
-        ></div>
-      </main>
-    </div>
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15.75 19.5 8.25 12l7.5-7.5"
+        />
+      </svg>
+      <span>Atrás</span>
+    </a>
+    <main
+      id="containerMain"
+      class="grid place-items-center text-center lg:grid-cols-2 lg:w-4/5 lg:place-self-center lg:text-start lg:gap-8"
+    ></main>
     <footer
       id="contactanos"
       class="text-white bg-black w-full h-auto lg:h-60 p-8 flex flex-col items-center lg:items-start text-center lg:text-justify lg:flex-row gap-12"
