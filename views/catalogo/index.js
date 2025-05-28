@@ -57,7 +57,7 @@ function filtrarPorTelas(list) {
       });
     } else if (div.id) {
       div.addEventListener("click", () => {
-        const newList = list.filter((tela) => tela.Type === `${div.id}`);
+        const newList = list.filter((tela) => tela.type === Number(div.id));
         imprimirTelas(newList);
       });
     }

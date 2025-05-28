@@ -16,15 +16,18 @@ async function getTela() {
   });
   let textoUsos = "";
   const { data } = consulta;
-  const {
+  let {
     name,
     photo,
     price,
     colores,
     composicion,
-    rendimiento_metros,
+    rendimiento,
     usos_sugeridos,
   } = data;
+
+  usos_sugeridos = JSON.parse(usos_sugeridos);
+  colores = JSON.parse(colores);
 
   usos_sugeridos.forEach((usos) => {
     textoUsos = usos + " " + textoUsos;
@@ -52,7 +55,7 @@ async function getTela() {
             class="flex flex-col text-center gap-2 border-b-2 border-b-slate-600 p-4 pb-8"
           >
             <span class="text-lg">Rendimiento</span>
-            <span>${rendimiento_metros} mts</span>
+            <span>${rendimiento} mts</span>
           </div>
           <div
             class="flex flex-col text-center gap-2 border-b-2 border-b-slate-600 p-4 pb-8"
