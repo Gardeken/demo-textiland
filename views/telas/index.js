@@ -9,11 +9,13 @@ idPag == "home" ? (atras.href = "/") : (atras.href = "/catalogo");
 document.addEventListener("DOMContentLoaded", getTela);
 
 async function getTela() {
-  const consulta = await fetch("/catalogo.json");
-  const listadoTelas = await consulta.json();
+  const consulta = await axios.get("/api/telas/getTela", {
+    params: {
+      idTela,
+    },
+  });
   let textoUsos = "";
-  const { telas } = listadoTelas;
-  const tela = telas.find((tela) => tela.id === Number(idTela));
+  const { data } = consulta;
   const {
     name,
     photo,
@@ -22,7 +24,7 @@ async function getTela() {
     composicion,
     rendimiento_metros,
     usos_sugeridos,
-  } = tela;
+  } = data;
 
   usos_sugeridos.forEach((usos) => {
     textoUsos = usos + " " + textoUsos;
@@ -72,11 +74,11 @@ async function getTela() {
   const containerColores = document.querySelector("#containerColores");
   colores.forEach((color) => {
     const span = document.createElement("span");
+    span.style = `background-color: ${color};`;
     span.classList.add(
       "w-8",
       "h-8",
       "rounded-full",
-      `bg-[${color}]`,
       "border-black",
       "border-[1px]"
     );

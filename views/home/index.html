@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="/output.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/index.css" />
+    <link href="../src/output.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../src/index.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Textiland</title>
   </head>
   <body class="relative">
@@ -103,7 +104,7 @@
     </aside>
     <main>
       <div class="w-full mb-5 relative grid h-[30rem]">
-        <img src="/tela-bg.jpg" class="w-full h-full" alt="" />
+        <img src="../src/tela-bg.jpg" class="w-full h-full" alt="" />
         <div class="bg-black absolute h-full w-full opacity-50"></div>
         <h3 class="absolute place-self-center text-center text-4xl text-white">
           Únicos fabricantes de tela en Venezuela
@@ -135,7 +136,7 @@
           muted
           loop
           playsinline
-          src="/video-home.mp4"
+          src="../src/video-home.mp4"
         ></video>
       </section>
       <section
@@ -172,7 +173,11 @@
       <section
         class="relative h-[38rem] lg:h-[35rem] text-white mb-16 flex flex-col justify-center items-center"
       >
-        <img src="/telas-bg.png" class="absolute h-full w-full -z-20" alt="" />
+        <img
+          src="../src/telas-bg.png"
+          class="absolute h-full w-full -z-20"
+          alt=""
+        />
         <div class="bg-black opacity-50 absolute -z-10 h-full w-full"></div>
         <h3 class="m-6 text-4xl text-center font-bold">
           Convierte tu idea en una realidad.

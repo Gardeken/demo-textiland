@@ -3,7 +3,7 @@
     {
       "id": 100001,
       "name": "Cotton Lycra",
-      "photo": "/catalogo/Cotton-Lycra.webp",
+      "photo": "../src/catalogo/Cotton-Lycra.webp",
       "Type": "1",
       "price": 10.5,
       "usos_sugeridos": [
@@ -27,7 +27,7 @@
     {
       "id": 100002,
       "name": "Dry-N",
-      "photo": "/catalogo/Dry-N.webp",
+      "photo": "../src/catalogo/Dry-N.webp",
       "Type": "2",
       "price": 11.25,
       "usos_sugeridos": [
@@ -49,7 +49,7 @@
     {
       "id": 100003,
       "name": "Dry Beisbol",
-      "photo": "/catalogo/Dry-Beisbol.webp",
+      "photo": "../src/catalogo/Dry-Beisbol.webp",
       "Type": "2",
       "price": 9.75,
       "usos_sugeridos": [
@@ -64,7 +64,7 @@
     {
       "id": 100004,
       "name": "Dry Mets",
-      "photo": "/catalogo/Dry-Mets.webp",
+      "photo": "../src/catalogo/Dry-Mets.webp",
       "Type": "2",
       "price": 10.0,
       "usos_sugeridos": [
@@ -79,7 +79,7 @@
     {
       "id": 100005,
       "name": "Drytex",
-      "photo": "/catalogo/Drytex.webp",
+      "photo": "../src/catalogo/Drytex.webp",
       "Type": "2",
       "price": 11.5,
       "usos_sugeridos": [
@@ -94,7 +94,7 @@
     {
       "id": 100006,
       "name": "Mesh Panamá",
-      "photo": "/catalogo/Mesh-Panama.webp",
+      "photo": "../src/catalogo/Mesh-Panama.webp",
       "Type": "2",
       "price": 9.0,
       "usos_sugeridos": [
@@ -109,7 +109,7 @@
     {
       "id": 100007,
       "name": "Mesh running",
-      "photo": "/catalogo/Mesh-running.webp",
+      "photo": "../src/catalogo/Mesh-running.webp",
       "Type": "2",
       "price": 9.25,
       "usos_sugeridos": [
@@ -124,7 +124,7 @@
     {
       "id": 100008,
       "name": "Jersey 24/1",
-      "photo": "/catalogo/Jersey-24_1.webp",
+      "photo": "../src/catalogo/Jersey-24_1.webp",
       "Type": "3",
       "price": 8.5,
       "usos_sugeridos": [
@@ -147,7 +147,7 @@
     {
       "id": 100009,
       "name": "Jersey 20/1",
-      "photo": "/catalogo/Jersey-20_1.webp",
+      "photo": "../src/catalogo/Jersey-20_1.webp",
       "Type": "3",
       "price": 8.75,
       "usos_sugeridos": [
@@ -170,7 +170,7 @@
     {
       "id": 100010,
       "name": "Jersey 30/1",
-      "photo": "/catalogo/Jersey-30_1.webp",
+      "photo": "../src/catalogo/Jersey-30_1.webp",
       "Type": "3",
       "price": 8.25,
       "usos_sugeridos": [
@@ -185,7 +185,7 @@
     {
       "id": 100011,
       "name": "Jersey catiónico",
-      "photo": "/catalogo/Jersey-Cationico.webp",
+      "photo": "../src/catalogo/Jersey-Cationico.webp",
       "Type": "3",
       "price": 10.75,
       "usos_sugeridos": [
@@ -200,7 +200,7 @@
     {
       "id": 100012,
       "name": "Jersey ecosoft",
-      "photo": "/catalogo/Jersey-Ecosoft.webp",
+      "photo": "../src/catalogo/Jersey-Ecosoft.webp",
       "Type": "3",
       "price": 11.0,
       "usos_sugeridos": [
@@ -215,7 +215,7 @@
     {
       "id": 100013,
       "name": "Jersey estampado",
-      "photo": "/catalogo/Jersey-Estampado.webp",
+      "photo": "../src/catalogo/Jersey-Estampado.webp",
       "Type": "3",
       "price": 11.8,
       "usos_sugeridos": [

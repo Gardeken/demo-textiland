@@ -18,11 +18,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function getAllTelas() {
-  const consulta = await fetch("/catalogo.json");
-  const listadoTelas = await consulta.json();
-  const { telas } = listadoTelas;
-  filtrarPorTelas(telas);
-  imprimirTelas(telas);
+  const consulta = await axios.get("/api/telas/getAll");
+  const { data } = consulta;
+  filtrarPorTelas(data);
+  imprimirTelas(data);
 }
 
 function imprimirTelas(list) {
