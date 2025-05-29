@@ -103,13 +103,50 @@
       </div>
     </aside>
     <main>
-      <div class="w-full mb-5 relative grid h-[30rem]">
-        <img src="../src/tela-bg.jpg" class="w-full h-full" alt="" />
+      <div class="w-full mb-5 relative grid h-[30rem] overflow-hidden">
+        <video
+          class="absolute min-w-full min-h-full max-w-none object-cover"
+          src="../src/video-bg.mp4"
+          autoplay
+          muted
+          loop
+        ></video>
         <div class="bg-black absolute h-full w-full opacity-50"></div>
         <h3 class="absolute place-self-center text-center text-4xl text-white">
-          Únicos fabricantes de tela en Venezuela
+          Somos fabricantes de tejido de punto en Venezuela.
         </h3>
       </div>
+      <section class="px-6 pt-6">
+        <h3 class="mb-8 text-2xl">Algunas de nuestras telas</h3>
+        <div class="overflow-x-scroll mb-16">
+          <div
+            id="containerTelas"
+            class="w-[75rem] lg:w-full h-64 lg:h-60 mb-8 lg:grid flex lg:grid-flow-col gap-4"
+          ></div>
+        </div>
+      </section>
+      <section
+        id="historia"
+        class="p-6 w-full h-auto lg:h-96 bg-black mb-12 text-white"
+      >
+        <h2 class="mb-8 text-4xl font-bold">Historia</h2>
+        <p class="text-lg">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam
+          distinctio debitis, nostrum aut veniam suscipit repudiandae eaque
+          dolor! Explicabo eius quod voluptate doloremque minus commodi eum ut.
+          In, harum itaque. Lorem ipsum dolor sit amet consectetur adipisicing
+          elit. Vitae illo sit minus sint, laudantium atque reiciendis culpa
+          consectetur minima ea quos doloribus accusamus natus perspiciatis et
+          saepe dicta reprehenderit earum! Lorem ipsum dolor, sit amet
+          consectetur adipisicing elit. Repellendus ab magni itaque fugit,
+          suscipit modi voluptas alias quae molestiae optio asperiores tempore
+          quas repellat velit quisquam, quos, excepturi consequatur unde. Lorem
+          ipsum dolor sit amet consectetur, adipisicing elit. Saepe rerum quos
+          distinctio quibusdam atque veritatis illo, consequatur debitis. Iusto
+          impedit voluptate possimus, exercitationem numquam repudiandae tenetur
+          et quisquam est perferendis.
+        </p>
+      </section>
       <section
         id="aboutus"
         class="flex flex-col lg:grid grid-cols-3 h-auto gap-5 lg:gap-0 lg:h-[35rem] my-16 overflow-hidden"
@@ -138,37 +175,6 @@
           playsinline
           src="../src/video-home.mp4"
         ></video>
-      </section>
-      <section
-        id="historia"
-        class="p-6 w-full h-auto lg:h-96 bg-black mb-12 text-white"
-      >
-        <h2 class="mb-8 text-4xl font-bold">Historia</h2>
-        <p class="text-lg">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam
-          distinctio debitis, nostrum aut veniam suscipit repudiandae eaque
-          dolor! Explicabo eius quod voluptate doloremque minus commodi eum ut.
-          In, harum itaque. Lorem ipsum dolor sit amet consectetur adipisicing
-          elit. Vitae illo sit minus sint, laudantium atque reiciendis culpa
-          consectetur minima ea quos doloribus accusamus natus perspiciatis et
-          saepe dicta reprehenderit earum! Lorem ipsum dolor, sit amet
-          consectetur adipisicing elit. Repellendus ab magni itaque fugit,
-          suscipit modi voluptas alias quae molestiae optio asperiores tempore
-          quas repellat velit quisquam, quos, excepturi consequatur unde. Lorem
-          ipsum dolor sit amet consectetur, adipisicing elit. Saepe rerum quos
-          distinctio quibusdam atque veritatis illo, consequatur debitis. Iusto
-          impedit voluptate possimus, exercitationem numquam repudiandae tenetur
-          et quisquam est perferendis.
-        </p>
-      </section>
-      <section class="px-6 pt-6">
-        <h3 class="mb-8 text-2xl">Algunas de nuestras telas</h3>
-        <div class="overflow-x-scroll mb-16">
-          <div
-            id="containerTelas"
-            class="w-[75rem] lg:w-full h-64 lg:h-60 mb-8 lg:grid flex lg:grid-flow-col gap-4"
-          ></div>
-        </div>
       </section>
       <section
         class="relative h-[38rem] lg:h-[35rem] text-white mb-16 flex flex-col justify-center items-center"
