@@ -14,7 +14,6 @@ async function getTela() {
       idTela,
     },
   });
-  let textoUsos = "";
   const { data } = consulta;
   let {
     name,
@@ -26,12 +25,7 @@ async function getTela() {
     usos_sugeridos,
   } = data;
 
-  usos_sugeridos = JSON.parse(usos_sugeridos);
   colores = JSON.parse(colores);
-
-  usos_sugeridos.forEach((usos) => {
-    textoUsos = usos + " " + textoUsos;
-  });
 
   containerMain.innerHTML = `
   <img
@@ -61,7 +55,7 @@ async function getTela() {
           <div class="flex flex-col gap-4 p-4">
             <span class="text-lg">Uso sugerido</span>
             <span
-              >${textoUsos}</span
+              >${usos_sugeridos}</span
             >
           </div>
           <div class="border-[1px] m-4 border-slate-600 w-3/4 lg:w-full"></div>
