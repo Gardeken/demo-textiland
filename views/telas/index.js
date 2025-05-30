@@ -34,38 +34,38 @@ async function getTela() {
   });
 
   containerMain.innerHTML = `
-  
   <img
         class="w-3/4 lg:w-[30rem] lg:place-self-start"
         src="${photo}"
         alt=""
       />
-      <div class="w-full mb-8">
+      <div class="w-full mb-8 text-center">
         <h3 class="text-2xl m-4 lg:mx-4 lg:mb-0">${name}</h3>
-        <span class="mb-4 lg:mx-4">$${price} / kg</span>
+        <span class="mb-4 lg:mx-4">$4.00 / kg</span>
         <h4 class="text-2xl m-4">Características</h4>
-        <div class="mb-8 flex flex-col">
-          <div
-            class="flex flex-col text-center gap-2 border-b-2 border-b-slate-600 p-4 pb-8"
-          >
+        <div class="mb-8 flex flex-col items-center">
+          <div class="border-[1px] m-4 border-slate-600 w-3/4 lg:w-full"></div>
+          <div class="flex flex-col gap-4 p-4">
             <span class="text-lg">Composición</span>
-            <span>${composicion}</span>
+            <span
+              >${composicion}</span
+            >
           </div>
-          <div
-            class="flex flex-col text-center gap-2 border-b-2 border-b-slate-600 p-4 pb-8"
-          >
+          <div class="border-[1px] m-4 border-slate-600 w-3/4 lg:w-full"></div>
+          <div class="flex flex-col gap-4 p-4">
             <span class="text-lg">Rendimiento</span>
             <span>${rendimiento} mts</span>
           </div>
-          <div
-            class="flex flex-col text-center gap-2 border-b-2 border-b-slate-600 p-4 pb-8"
-          >
+          <div class="border-[1px] m-4 border-slate-600 w-3/4 lg:w-full"></div>
+
+          <div class="flex flex-col gap-4 p-4">
             <span class="text-lg">Uso sugerido</span>
-            <span>${textoUsos}</span>
+            <span
+              >${textoUsos}</span
+            >
           </div>
-          <div
-            class="flex flex-col text-center gap-2 border-b-2 border-b-slate-600 p-4 pb-8"
-          >
+          <div class="border-[1px] m-4 border-slate-600 w-3/4 lg:w-full"></div>
+          <div class="p-4">
             <span class="text-lg">Colores</span>
             <div id="containerColores" class="flex gap-4 justify-center mt-4">
             </div>

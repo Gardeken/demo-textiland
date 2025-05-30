@@ -22,6 +22,7 @@ module.exports = {
     "border-black",
     "border-[1px]",
     "rounded-full",
+    "grid-cols-5",
   ],
   theme: {
     extend: {},

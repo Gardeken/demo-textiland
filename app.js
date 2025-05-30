@@ -20,6 +20,7 @@ ConectarBD();
 app.use(express.json());
 app.use("/", express.static(path.resolve("views", "home")));
 app.use("/catalogo", express.static(path.resolve("views", "catalogo")));
+app.use("/adminPanel", express.static(path.resolve("views", "adminPanel")));
 app.use("/telas", express.static(path.resolve("views", "telas")));
 app.use("/src", express.static(path.resolve("src")));
 
