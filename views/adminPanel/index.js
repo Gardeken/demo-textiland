@@ -273,6 +273,9 @@ async function editTelaModal(idTela) {
       bgBlack.classList.add("hidden");
       modal.classList.add("hidden");
       body.classList.remove("overflow-hidden");
+      const listadoTelas = await getAll();
+      imprimirTelas(listadoTelas);
+      filtrarNombre(listadoTelas);
       alert("La tela se ha actualizado con éxito");
       closeModalEvent();
     } catch (error) {
