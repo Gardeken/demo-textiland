@@ -90,6 +90,10 @@ async function createTelaModal() {
   const cancelBtn = document.querySelector("#cancelBtn");
   const aceptarBtnCT = document.querySelector("#aceptarBtnCT");
   const inputPhoto = document.querySelector("#inputPhoto");
+  const clearInputFile = document.querySelector("#clearInputFile");
+  clearInputFile.addEventListener("click", () => {
+    inputPhoto.value = "";
+  });
   inputPhoto.addEventListener("change", () => {
     const tamaño = transformarBytes(inputPhoto.files[0].size);
     const extension = validarExtension(inputPhoto.files[0].name, inputPhoto);
