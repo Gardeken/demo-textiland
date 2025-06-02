@@ -4,6 +4,9 @@ const lateralBar = document.querySelector("#lateralBar");
 const BgBlack = document.querySelector("#BgBlack");
 const containerTelas = document.querySelector("#container-telas");
 const containerIdTelas = document.querySelector("#containerIdTelas");
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const typeTela = urlParams.get("type");
 
 function toggleLateral() {
   lateralBar.classList.toggle("-translate-x-full");
@@ -23,9 +26,14 @@ async function getAllTelas() {
   const consulta = await axios.get("/api/telas/getAll");
   const { data } = consulta;
   filtrarPorTelas(data);
-  imprimirTelas(data);
   filtrarPrecio(data);
   filtrarNombre(data);
+  if (typeTela) {
+    const newList = data.filter((tela) => tela.type === Number(typeTela));
+    imprimirTelas(newList);
+  } else {
+    imprimirTelas(data);
+  }
 }
 
 function filtrarPorTelas(list) {
