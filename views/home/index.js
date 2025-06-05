@@ -3,6 +3,7 @@ const x_icon = document.querySelector("#x-icon");
 const lateralBar = document.querySelector("#lateralBar");
 const BgBlack = document.querySelector("#BgBlack");
 const containerTelas = document.querySelector("#containerTelas");
+let listadoTelas = [];
 
 function toggleLateral() {
   lateralBar.classList.toggle("-translate-x-full");
@@ -16,7 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
 async function mostrarTelas() {
   const telas = await getAllTelas();
   for (let i = 0; i < 7; i++) {
-    const tela = telas[i];
+    const random = getRandom(0, telas.length - 1);
+    const tela = telas[random];
     const a = document.createElement("a");
     a.classList.add("hover:scale-110", "duration-300");
     a.href = `/telas?id=${tela.id}&pag=home`;
@@ -27,6 +29,19 @@ async function mostrarTelas() {
     a.classList.add("shadow-2xl", "w-48", "h-48");
     containerTelas.appendChild(a);
   }
+}
+
+function getRandom(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  let random = Math.floor(Math.random() * (max - min + 1)) + min;
+  let validar = listadoTelas.includes(random);
+  while (validar) {
+    random = Math.floor(Math.random() * (max - min + 1)) + min;
+    validar = listadoTelas.includes(random);
+  }
+  listadoTelas.push(random);
+  return random;
 }
 
 async function getAllTelas() {

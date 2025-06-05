@@ -14,6 +14,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   const listadoTelas = await getAll();
   imprimirTelas(listadoTelas);
   filtrarNombre(listadoTelas);
+  let user = localStorage.getItem("usuario");
+  if (user) {
+    user = JSON.parse(user);
+    const { username, password } = user;
+    const consulta = await axios.get("/api/users/getAdmin", {
+      params: {
+        username,
+        password,
+      },
+    });
+    bgBlack.classList.add("hidden");
+    modaLogin.classList.add("hidden");
+    modaLogin.innerHTML = "";
+  } else {
+    loginModal();
+  }
   closeModalEvent();
   eventoClickContainer();
   main.addEventListener("click", (e) => {
@@ -50,6 +66,31 @@ function eventoClickContainer() {
 }
 
 // Eventos Modal
+
+async function loginModal() {
+  const modaLogin = document.querySelector("#modaLogin");
+  const aceptar = document.querySelector("#aceptar");
+  aceptar.addEventListener("click", async () => {
+    const username = document.querySelector("#inputName").value;
+    const password = document.querySelector("#inputPass").value;
+    try {
+      const consulta = await axios.get("/api/users/getAdmin", {
+        params: {
+          username,
+          password,
+        },
+      });
+      bgBlack.classList.add("hidden");
+      modaLogin.classList.add("hidden");
+      modaLogin.innerHTML = "";
+      const user = JSON.stringify({ username: username, password: password });
+      localStorage.setItem("usuario", user);
+    } catch (error) {
+      alert(error.response.data.message);
+    }
+  });
+  return closeModalEvent();
+}
 
 async function createTelaModal() {
   // crear tela
@@ -332,7 +373,7 @@ function openModalEvent() {
 // Filtros
 
 function filtrarNombre(list) {
-  const inputName = document.querySelector("#inputName");
+  const inputName = document.querySelector("#inputSearch");
   inputName.addEventListener("input", () => {
     if (inputName.value != "") {
       const inputNameValue = inputName.value;

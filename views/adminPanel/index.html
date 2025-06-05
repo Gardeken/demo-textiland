@@ -11,7 +11,7 @@
   <body class="grid">
     <div
       id="bgBlack"
-      class="hidden w-full h-full fixed top-0 bg-black opacity-50 z-20"
+      class="w-full h-full fixed top-0 bg-black opacity-50 z-20"
     ></div>
     <div
       id="modal"
@@ -40,12 +40,43 @@
         </div>
       </div>
     </div>
+    <div
+      id="modaLogin"
+      class="bg-white m-20 p-4 lg:p-8 fixed top-0 z-30 place-self-center"
+    >
+      <div class="h-full grid place-items-center">
+        <div class="flex flex-col items-center">
+          <label for="">Usuario</label>
+          <input
+            id="inputName"
+            class="bg-slate-700 text-white lg:w-80 p-2 pl-10 m-8 outline-none rounded"
+            type="text"
+          />
+        </div>
+        <div class="flex flex-col items-center">
+          <label for="">Contraseña</label>
+          <input
+            id="inputPass"
+            class="bg-slate-700 text-white lg:w-80 p-2 pl-10 m-8 outline-none rounded"
+            type="password"
+          />
+        </div>
+        <div class="grid place-items-center">
+          <button
+            id="aceptar"
+            class="bg-slate-700 rounded text-white m-4 p-2 w-auto cursor-pointer"
+          >
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="relative grid place-self-center">
       <input
         class="bg-slate-700 text-white lg:w-80 p-2 pl-10 m-8 outline-none rounded"
         placeholder="Buscar productos"
         type="text"
-        id="inputName"
+        id="inputSearch"
       />
       <svg
         xmlns="http://www.w3.org/2000/svg"

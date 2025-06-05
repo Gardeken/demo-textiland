@@ -7,6 +7,7 @@ const containerIdTelas = document.querySelector("#containerIdTelas");
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const typeTela = urlParams.get("type");
+const containerColorTelas = document.querySelector("#containerColorTelas");
 
 function toggleLateral() {
   lateralBar.classList.toggle("-translate-x-full");
@@ -28,12 +29,91 @@ async function getAllTelas() {
   filtrarPorTelas(data);
   filtrarPrecio(data);
   filtrarNombre(data);
+  filtrarPorColor(data);
   if (typeTela) {
     const newList = data.filter((tela) => tela.type === Number(typeTela));
+    imprimirColores(newList);
     imprimirTelas(newList);
   } else {
     imprimirTelas(data);
+    imprimirColores(data);
   }
+}
+
+// Imprimir
+
+function imprimirTelas(list) {
+  const spinner = document.querySelector("#spinner");
+  containerTelas.innerHTML = "";
+  spinner.innerHTML = "";
+  list.forEach((tela) => {
+    const { name, id, photo, type, price } = tela;
+    const a = document.createElement("a");
+    a.classList.add(
+      "w-auto",
+      "flex",
+      "flex-col",
+      "shadow-xl",
+      "duration-300",
+      "hover:scale-110"
+    );
+    a.href = `/telas?id=${id}&pag=catalogo`;
+    a.innerHTML = `<img class="!h-40 w-40 sm:h-44 sm:w-44" src="${photo}" alt="" />
+          <div class="flex flex-col pl-3 pt-1 mb-3">
+          <span class="text-lg">${name}</span>
+          <span>$${price} / kg</span>
+          </div>
+          `;
+    containerTelas.appendChild(a);
+  });
+}
+
+function imprimirColores(list) {
+  containerColorTelas.innerHTML = "";
+  const listadoColoresTelas = [];
+  list.forEach((tela) => {
+    const { colores } = tela;
+    const listColores = JSON.parse(colores);
+    listColores.forEach((color) => {
+      const validar = listadoColoresTelas.includes(color);
+      if (!validar) {
+        const span = document.createElement("span");
+        span.classList.add(
+          "w-full",
+          "h-8",
+          "border-[1px]",
+          "border-black",
+          "cursor-pointer",
+          "hover:scale-110",
+          "duration-300",
+          "color"
+        );
+        span.style = `background-color: ${color};`;
+        span.id = color;
+        containerColorTelas.appendChild(span);
+        listadoColoresTelas.push(color);
+      }
+    });
+  });
+}
+
+// Filtros
+
+function filtrarPorColor(list) {
+  containerColorTelas.addEventListener("click", (e) => {
+    if (e.target.closest(".color")) {
+      const bloqueColor = e.target.closest(".color");
+      const color = bloqueColor.id;
+      const newList = list.filter((tela) => {
+        const { colores } = tela;
+        const listadoColoresTelas = JSON.parse(colores);
+        const validarColor = listadoColoresTelas.includes(color);
+        return validarColor;
+      });
+      imprimirTelas(newList);
+      imprimirColores(newList);
+    }
+  });
 }
 
 function filtrarPorTelas(list) {
@@ -42,11 +122,13 @@ function filtrarPorTelas(list) {
     if (div.id == "0") {
       div.addEventListener("click", () => {
         imprimirTelas(list);
+        imprimirColores(list);
       });
     } else if (div.id) {
       div.addEventListener("click", () => {
         const newList = list.filter((tela) => tela.type === Number(div.id));
         imprimirTelas(newList);
+        imprimirColores(newList);
       });
     }
   });
@@ -64,10 +146,11 @@ function filtrarNombre(list) {
           .includes(inputNameValue.toLowerCase());
         return validarName;
       });
-      console.log(newList);
       imprimirTelas(newList);
+      imprimirColores(newList);
     } else {
       imprimirTelas(list);
+      imprimirColores(list);
     }
   });
 }
@@ -93,9 +176,11 @@ function filtrarPrecio(list) {
     if (lowPrice.value != "") {
       newList = filtroPrecio(lowPrice, highPrice, list);
       imprimirTelas(newList);
+      imprimirColores(newList);
     } else {
       newList = filtroPrecio(lowPrice, highPrice, list);
       imprimirTelas(newList);
+      imprimirColores(newList);
     }
   });
 
@@ -103,35 +188,11 @@ function filtrarPrecio(list) {
     if (highPrice.value != "") {
       newList = filtroPrecio(lowPrice, highPrice, list);
       imprimirTelas(newList);
+      imprimirColores(newList);
     } else {
       newList = filtroPrecio(lowPrice, highPrice, list);
       imprimirTelas(newList);
+      imprimirColores(newList);
     }
-  });
-}
-
-function imprimirTelas(list) {
-  const spinner = document.querySelector("#spinner");
-  containerTelas.innerHTML = "";
-  spinner.innerHTML = "";
-  list.forEach((tela) => {
-    const { name, id, photo, type, price } = tela;
-    const a = document.createElement("a");
-    a.classList.add(
-      "w-auto",
-      "flex",
-      "flex-col",
-      "shadow-xl",
-      "duration-300",
-      "hover:scale-110"
-    );
-    a.href = `/telas?id=${id}&pag=catalogo`;
-    a.innerHTML = `<img class="!h-40 w-40 sm:h-44 sm:w-44" src="${photo}" alt="" />
-          <div class="flex flex-col pl-3 pt-1 mb-3">
-          <span class="text-lg">${name}</span>
-          <span>$${price} / kg</span>
-          </div>
-          `;
-    containerTelas.appendChild(a);
   });
 }
