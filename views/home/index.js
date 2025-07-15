@@ -3,7 +3,6 @@ const x_icon = document.querySelector("#x-icon");
 const lateralBar = document.querySelector("#lateralBar");
 const BgBlack = document.querySelector("#BgBlack");
 const containerTelas = document.querySelector("#containerTelas");
-let listadoTelas = [];
 
 function toggleLateral() {
   lateralBar.classList.toggle("-translate-x-full");
@@ -18,7 +17,7 @@ async function mostrarTelas() {
   const telas = await getAllTelas();
   for (let i = 0; i < 7; i++) {
     const random = getRandom(0, telas.length - 1);
-    const tela = telas[random];
+    const tela = telas[i];
     const a = document.createElement("a");
     a.classList.add("hover:scale-110", "duration-300");
     a.href = `/telas?id=${tela.id}&pag=home`;
@@ -32,13 +31,24 @@ async function mostrarTelas() {
 }
 
 function getRandom(min, max) {
+  let listadoTelas = [];
   min = Math.ceil(min);
   max = Math.floor(max);
+  let attempts = 0;
+  const maxAttempts = (max - min + 1) * 2;
   let random = Math.floor(Math.random() * (max - min + 1)) + min;
   let validar = listadoTelas.includes(random);
   while (validar) {
     random = Math.floor(Math.random() * (max - min + 1)) + min;
     validar = listadoTelas.includes(random);
+    random = Math.floor(Math.random() * (max - min + 1)) + min;
+    attempts++;
+    if (attempts > maxAttempts) {
+      console.warn(
+        "Could not find a unique random number after many attempts. Check your logic or array size."
+      );
+      break;
+    }
   }
   listadoTelas.push(random);
   return random;

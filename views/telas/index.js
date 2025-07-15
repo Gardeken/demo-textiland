@@ -35,7 +35,7 @@ async function getTela() {
       />
       <div class="w-full mb-8 text-center">
         <h3 class="text-2xl m-4 lg:mx-4 lg:mb-0">${name}</h3>
-        <span class="mb-4 lg:mx-4">$4.00 / kg</span>
+        <span class="mb-4 lg:mx-4">$${price} / kg</span>
         <h4 class="text-2xl m-4">Características</h4>
         <div class="mb-8 flex flex-col items-center">
           <div class="border-[1px] m-4 border-slate-600 w-3/4 lg:w-full"></div>

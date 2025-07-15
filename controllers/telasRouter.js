@@ -52,7 +52,6 @@ telasRouter.get("/getTelaName", async (req, res) => {
       msg: "La tela no existe",
     });
   } else {
-    console.log(validarTela);
     res.status(200).json({
       msg: "La tela ya existe",
     });
