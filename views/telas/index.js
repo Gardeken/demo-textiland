@@ -24,9 +24,9 @@ async function getTela() {
     rendimiento,
     usos_sugeridos,
   } = data;
-
   colores = JSON.parse(colores);
 
+  console.log(colores);
   containerMain.innerHTML = `
   <img
         class="w-3/4 lg:w-[30rem] lg:place-self-start"
@@ -69,9 +69,9 @@ async function getTela() {
   `;
 
   const containerColores = document.querySelector("#containerColores");
-  colores.forEach((color) => {
+  colores.forEach((obj) => {
     const span = document.createElement("span");
-    span.style = `background-color: ${color};`;
+    span.style = `background-color: ${obj.color};`;
     span.classList.add(
       "w-8",
       "h-8",

@@ -124,14 +124,20 @@ async function createTelaModal() {
         const inputNewColorName =
           document.querySelector("#inputNewColorName").value;
         const inputNewColor = document.querySelector("#inputNewColor").value;
-        if (listadoColoresNewTelaGlobal.includes(inputNewColor)) {
+        colorObj.color = inputNewColor;
+        colorObj.colorName = inputNewColorName;
+        if (
+          listadoColoresGlobal.some(
+            (obj) =>
+              obj.color === colorObj.color ||
+              obj.colorName === colorObj.colorName
+          )
+        ) {
           return alert("Este color ya existe");
         }
         if (!inputNewColor || !inputNewColorName) {
           return alert("No puede dejar algún campo vacío");
         }
-        colorObj.color = inputNewColor;
-        colorObj.colorName = inputNewColorName;
         listadoColoresNewTelaGlobal.push(colorObj);
         imprimirColor(listadoColoresNewTelaGlobal);
       });
@@ -254,9 +260,9 @@ async function viewTelaModal(idTela) {
   `;
   innerModal.appendChild(div);
   const containerColores = document.querySelector("#containerColores");
-  listadoColores.forEach((color) => {
+  listadoColores.forEach((obj) => {
     const span = document.createElement("span");
-    span.style = `background-color: ${color};`;
+    span.style = `background-color: ${obj.color};`;
     span.classList.add(
       "w-8",
       "h-8",
@@ -291,7 +297,6 @@ async function editTelaModal(idTela) {
     }
     //create color
     else if (e.target.closest(".addColor")) {
-      const colorObj = {};
       const containerInput = document.querySelector("#containerInput");
       containerInput.classList.add("p-4");
       containerInput.innerHTML = `
@@ -301,19 +306,25 @@ async function editTelaModal(idTela) {
       `;
       const aceptarBtnNC = document.querySelector("#aceptarBtnNC");
       aceptarBtnNC.addEventListener("click", () => {
+        const colorObj = {};
         const inputNewColorName =
           document.querySelector("#inputNewColorName").value;
         const inputNewColor = document.querySelector("#inputNewColor").value;
-        if (listadoColoresGlobal.includes(inputNewColor)) {
+        colorObj.color = inputNewColor;
+        colorObj.colorName = inputNewColorName;
+        if (
+          listadoColoresGlobal.some(
+            (obj) =>
+              obj.color === colorObj.color ||
+              obj.colorName === colorObj.colorName
+          )
+        ) {
           return alert("Este color ya existe");
         }
         if (!inputNewColor || !inputNewColorName) {
           return alert("No puede dejar algún campo vacío");
         }
-        colorObj.color = inputNewColor;
-        colorObj.colorName = inputNewColorName;
         listadoColoresGlobal.push(colorObj);
-        console.log(listadoColoresGlobal);
         imprimirColor(listadoColoresGlobal);
       });
     }
@@ -575,9 +586,6 @@ function imprimirColor(listColor) {
   const containerColores = document.querySelector("#containerColores");
   containerColores.innerHTML = "";
   listColor.forEach((obj) => {
-    console.log(obj);
-    console.log(obj.color);
-    console.log(obj.colorName);
     const divColor = document.createElement("div");
     divColor.classList.add("w-full", "px-4", "flex", "justify-between");
     divColor.innerHTML = `

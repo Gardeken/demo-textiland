@@ -74,8 +74,8 @@ function imprimirColores(list) {
   list.forEach((tela) => {
     const { colores } = tela;
     const listColores = JSON.parse(colores);
-    listColores.forEach((color) => {
-      const validar = listadoColoresTelas.includes(color);
+    listColores.forEach((obj) => {
+      const validar = listadoColoresTelas.includes(obj.color);
       if (!validar) {
         const span = document.createElement("span");
         span.classList.add(
@@ -88,10 +88,10 @@ function imprimirColores(list) {
           "duration-300",
           "color"
         );
-        span.style = `background-color: ${color};`;
-        span.id = color;
+        span.style = `background-color: ${obj.color};`;
+        span.id = obj.color;
         containerColorTelas.appendChild(span);
-        listadoColoresTelas.push(color);
+        listadoColoresTelas.push(obj.color);
       }
     });
   });
