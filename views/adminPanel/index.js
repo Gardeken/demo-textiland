@@ -59,8 +59,7 @@ function eventoClickContainer() {
     }
     if (e.target.closest(".deleteTela")) {
       const idTela = e.target.closest(".deleteTela").getAttribute("idtela");
-      const pathTela = e.target.closest(".deleteTela").getAttribute("pathtela");
-      deleteTelaModal(idTela, pathTela);
+      deleteTelaModal(idTela);
     }
   });
 }
@@ -366,7 +365,7 @@ async function editTelaModal(idTela) {
   });
 }
 
-async function deleteTelaModal(idTela, pathTela) {
+async function deleteTelaModal(idTela) {
   //Eliminar tela
   const confirmar = confirm("Está seguro de eliminar la tela?");
   if (confirmar) {
@@ -374,7 +373,6 @@ async function deleteTelaModal(idTela, pathTela) {
       const eliminarTela = await axios.delete("/api/telas/eliminarTela", {
         params: {
           idTela,
-          pathTela,
         },
       });
       const listadoTelas = await getAll();
@@ -439,7 +437,7 @@ function imprimirTelas(listTelas) {
       "p-2",
       "border-black"
     );
-    const { name, id, photo } = tela;
+    const { name, id } = tela;
     div.innerHTML = `<span>${name}</span>
           <div class="text-white flex gap-2">
             <div class="p-1 bg-slate-700 rounded cursor-pointer viewTela" idtela="${id}">
@@ -491,7 +489,6 @@ function imprimirTelas(listTelas) {
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-6 deleteTela"
-                pathtela="${photo}"
                 idtela="${id}"
               >
                 <path

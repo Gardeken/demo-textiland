@@ -110,11 +110,10 @@ telasRouter.post(
 // Eliminar telas
 
 telasRouter.delete("/eliminarTela", async (req, res) => {
-  let { idTela, pathTela } = req.query;
+  let { idTela } = req.query;
   try {
-    const listPath = pathTela.split("/");
-    pathTela = `${listPath[1]}`;
-    await fs.unlink(pathTela);
+    const telaAeliminar = await Tela.findOne({ id: idTela });
+    await fs.unlink(telaAeliminar.photo);
     await Tela.findOneAndDelete({ id: idTela });
     res.status(200).json({
       msg: "La tela se ha eliminado con éxito",
