@@ -6,6 +6,7 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,html,vue,svelte}",
   ],
   safelist: [
+    "grid-cols-2",
     "w-[40rem]",
     "shadow-2xl",
     "w-full",

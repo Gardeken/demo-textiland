@@ -8,14 +8,16 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const typeTela = urlParams.get("type");
 const containerColorTelas = document.querySelector("#containerColorTelas");
-
+const body = document.querySelector("body");
 function toggleLateral() {
+  body.classList.toggle("overflow-hidden");
   lateralBar.classList.toggle("-translate-x-full");
   BgBlack.classList.toggle("hidden");
 }
 
 ham_icon.addEventListener("click", toggleLateral);
 x_icon.addEventListener("click", toggleLateral);
+BgBlack.addEventListener("click", toggleLateral);
 
 document.addEventListener("DOMContentLoaded", () => {
   const spinner = document.querySelector("#spinner");
@@ -77,7 +79,10 @@ function imprimirColores(list) {
     listColores.forEach((obj) => {
       const validar = listadoColoresTelas.includes(obj.color);
       if (!validar) {
+        const div = document.createElement("div");
         const span = document.createElement("span");
+        const spanName = document.createElement("span");
+        div.classList.add("grid", "grid-cols-2", "gap-4", "w-full", "color");
         span.classList.add(
           "w-full",
           "h-8",
@@ -85,12 +90,14 @@ function imprimirColores(list) {
           "border-black",
           "cursor-pointer",
           "hover:scale-110",
-          "duration-300",
-          "color"
+          "duration-300"
         );
         span.style = `background-color: ${obj.color};`;
-        span.id = obj.color;
-        containerColorTelas.appendChild(span);
+        div.id = obj.color;
+        spanName.innerHTML = obj.colorName;
+        div.appendChild(span);
+        div.appendChild(spanName);
+        containerColorTelas.appendChild(div);
         listadoColoresTelas.push(obj.color);
       }
     });
@@ -107,7 +114,9 @@ function filtrarPorColor(list) {
       const newList = list.filter((tela) => {
         const { colores } = tela;
         const listadoColoresTelas = JSON.parse(colores);
-        const validarColor = listadoColoresTelas.includes(color);
+        const validarColor = listadoColoresTelas.some(
+          (obj) => obj.color === color
+        );
         return validarColor;
       });
       imprimirTelas(newList);
