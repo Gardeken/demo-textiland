@@ -21,7 +21,7 @@ async function mostrarTelas() {
     const a = document.createElement("a");
     a.classList.add("hover:scale-110", "duration-300");
     a.href = `/telas?id=${tela.id}&pag=home`;
-    a.innerHTML = `<img class="h-48 w-48" src="../src/${tela.photo}" alt="" />
+    a.innerHTML = `<img class="h-48 w-48" src="../${tela.photo}" alt="" />
             <div class="flex flex-col mt-2 ml-2">
               <span class="text-lg font-semibold">${tela.name}</span>
             </div>`;

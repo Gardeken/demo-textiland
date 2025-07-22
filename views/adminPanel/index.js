@@ -229,7 +229,7 @@ async function viewTelaModal(idTela) {
   div.classList.add("lg:flex");
   div.innerHTML = `
   <div class="grid place-items-center">
-          <img class="w-48 lg:w-96 m-4" src="${data.photo}" alt="" />
+          <img class="w-48 lg:w-96 m-4" src="../${data.photo}" alt="" />
         </div>
         <div class="text-center m-4 grid">
           <h3 class="text-2xl">${data.name}</h3>
