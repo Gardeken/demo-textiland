@@ -113,6 +113,10 @@ telasRouter.delete("/eliminarTela", async (req, res) => {
   let { idTela } = req.query;
   try {
     const telaAeliminar = await Tela.findOne({ id: idTela });
+    const pathTela = telaAeliminar.photo;
+    const listPath = pathTela.split("/");
+    console.log(telaAeliminar.photo);
+    console.log(listPath);
     await fs.unlink(telaAeliminar.photo);
     await Tela.findOneAndDelete({ id: idTela });
     res.status(200).json({
