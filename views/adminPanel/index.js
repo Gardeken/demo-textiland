@@ -127,7 +127,7 @@ async function createTelaModal() {
         colorObj.color = inputNewColor;
         colorObj.colorName = inputNewColorName;
         if (
-          listadoColoresGlobal.some(
+          listadoColoresNewTelaGlobal.some(
             (obj) =>
               obj.color === colorObj.color ||
               obj.colorName === colorObj.colorName

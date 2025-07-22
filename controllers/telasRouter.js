@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
-const fs = require("fs");
+const fs = require("fs").promises;
 
 // Consultar Telas
 
@@ -66,7 +66,6 @@ telasRouter.put("/actualizarTela", async (req, res) => {
     const actualizar = await Tela.findOneAndUpdate({ id: id }, req.body);
     res.status(200).json({ msg: "La tela se ha actualizado con éxito" });
   } catch (error) {
-    console.log(error);
     res.status(404).json({
       msg: "Hubo un error al actualizar la tela",
     });
@@ -113,16 +112,10 @@ telasRouter.post(
 telasRouter.delete("/eliminarTela", async (req, res) => {
   let { idTela, pathTela } = req.query;
   try {
-    const deleteTela = await Tela.findOneAndDelete({ id: idTela });
     const listPath = pathTela.split("/");
-    pathTela = `src/catalogo/${listPath[3]}`;
-    fs.unlink(pathTela, (err) => {
-      if (err) {
-        res.status(400).json({
-          message: "Hubo un error al eliminar la asignación",
-        });
-      }
-    });
+    pathTela = `${listPath[1]}`;
+    await fs.unlink(pathTela);
+    const deleteTela = await Tela.findOneAndDelete({ id: idTela });
     res.status(200).json({
       msg: "La tela se ha eliminado con éxito",
     });
