@@ -96,7 +96,7 @@ telasRouter.post(
       newTela.usos_sugeridos = usos;
       newTela.composicion = composicion;
       newTela.rendimiento = rendimiento;
-      newTela.photo = `../${path}`;
+      newTela.photo = path;
       newTela.colores = listaColores;
       newTela.id = id;
       newTela.save();

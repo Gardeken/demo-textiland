@@ -30,7 +30,7 @@ async function getTela() {
   containerMain.innerHTML = `
   <img
         class="w-3/4 lg:w-[30rem] lg:place-self-start"
-        src="${photo}"
+        src="../src/${photo}"
         alt=""
       />
       <div class="w-full mb-8 text-center">

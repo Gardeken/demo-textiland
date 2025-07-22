@@ -60,7 +60,7 @@ function imprimirTelas(list) {
       "hover:scale-110"
     );
     a.href = `/telas?id=${id}&pag=catalogo`;
-    a.innerHTML = `<img class="!h-40 w-40 sm:h-44 sm:w-44" src="${photo}" alt="" />
+    a.innerHTML = `<img class="!h-40 w-40 sm:h-44 sm:w-44" src="../src/${photo}" alt="" />
           <div class="flex flex-col pl-3 pt-1 mb-3">
           <span class="text-lg">${name}</span>
           <span>$${price} / kg</span>
