@@ -61,7 +61,7 @@ async function getTela() {
           <div class="border-[1px] m-4 border-slate-600 w-3/4 lg:w-full"></div>
           <div class="p-4">
             <span class="text-lg">Colores</span>
-            <div id="containerColores" class="flex gap-4 justify-center mt-4">
+            <div id="containerColores" class="flex flex-wrap gap-4 justify-center mt-4 max-w-96">
             </div>
           </div>
         </div>
