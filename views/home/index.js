@@ -61,3 +61,4 @@ async function getAllTelas() {
 
 ham_icon.addEventListener("click", toggleLateral);
 x_icon.addEventListener("click", toggleLateral);
+BgBlack.addEventListener("click", toggleLateral);
