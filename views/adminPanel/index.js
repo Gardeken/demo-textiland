@@ -1,4 +1,4 @@
-const containerTelas = document.querySelector("#containerTelas");
+const containerMain = document.querySelector("#containerMain");
 const spinner = document.querySelector("#spinner");
 const inputName = document.querySelector("#inputName");
 const closeModal = document.querySelector("#closeModal");
@@ -10,6 +10,8 @@ const hamIcon = document.querySelector("#hamIcon");
 const xIcon = document.querySelector("#xIcon");
 const lateralBar = document.querySelector("#lateralBar");
 const cambioVideosBtn = document.querySelector("#cambioVideosBtn");
+const mostrarTelasBtn = document.querySelector("#mostrarTelasBtn");
+const mostrarVideosBtn = document.querySelector("#mostrarVideosBtn");
 const body = document.querySelector("body");
 const main = document.querySelector("main");
 let listadoColoresGlobal;
@@ -31,9 +33,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       modaLogin.classList.add("hidden");
       modaLogin.innerHTML = "";
       const listadoTelas = await getAll();
-      imprimirVideos();
-      //imprimirTelas(listadoTelas);
-      //filtrarNombre(listadoTelas);
+      imprimirTelas(listadoTelas);
+      filtrarNombre(listadoTelas);
+      mostrarTelas(listadoTelas);
+      mostrarVideos();
     } catch (error) {
       alert(error.response.data.message);
     }
@@ -66,7 +69,7 @@ function toggleLateral() {
 }
 
 function eventoClickContainer() {
-  containerTelas.addEventListener("click", (e) => {
+  containerMain.addEventListener("click", (e) => {
     if (e.target.closest(".viewTela")) {
       const idTela = e.target.closest(".viewTela").getAttribute("idtela");
       viewTelaModal(idTela);
@@ -80,6 +83,19 @@ function eventoClickContainer() {
       deleteTelaModal(idTela);
     }
   });
+}
+
+// Eventos Barra lateral
+
+function mostrarTelas(list) {
+  mostrarTelasBtn.addEventListener("click", () => {
+    imprimirTelas(list);
+    filtrarNombre(list);
+  });
+}
+
+function mostrarVideos() {
+  mostrarVideosBtn.addEventListener("click", imprimirVideos);
 }
 
 // Eventos Modal
@@ -441,7 +457,7 @@ function filtrarNombre(list) {
 // Imprimir
 
 function imprimirTelas(listTelas) {
-  containerTelas.innerHTML = "";
+  containerMain.innerHTML = "";
   spinner.classList.remove("loader");
   listTelas.forEach((tela) => {
     const div = document.createElement("div");
@@ -519,7 +535,7 @@ function imprimirTelas(listTelas) {
             </div>
           </div>
 `;
-    containerTelas.appendChild(div);
+    containerMain.appendChild(div);
   });
 }
 
@@ -790,7 +806,70 @@ function imprimirTelaCrear() {
 }
 
 function imprimirVideos() {
+  containerMain.innerHTML = "";
   spinner.classList.remove("loader");
+  containerMain.innerHTML = `<div
+            class="flex justify-between border-slate-600 border-2 rounded m-4 p-3"
+          >
+            <span>Video home 1</span>
+            <div class="flex text-white gap-4">
+              <div class="p-1 bg-slate-700 rounded cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+              </div>
+              <button class="p-1 bg-slate-700 rounded cursor-pointer">
+                Cambiar
+              </button>
+            </div>
+          </div>
+          <div
+            class="flex justify-between border-slate-600 border-2 rounded m-4 p-3"
+          >
+            <span>Video home 2</span>
+            <div class="flex text-white gap-4">
+              <div class="p-1 bg-slate-700 rounded cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+              </div>
+              <button class="p-1 bg-slate-700 rounded cursor-pointer">
+                Cambiar
+              </button>
+            </div>
+          </div>`;
 }
 
 // funciones para input file
