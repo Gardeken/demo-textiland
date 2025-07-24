@@ -8,11 +8,67 @@
     <link rel="stylesheet" href="../src/index.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
-  <body class="grid">
+  <body class="flex flex-col md:grid md:grid-cols-3">
+    <div class="w-full grid place-items-end p-4 md:hidden">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        id="hamIcon"
+        class="w-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+        />
+      </svg>
+    </div>
+    <div
+      id="bgBlackLogin"
+      class="w-full h-full fixed top-0 bg-black z-20"
+    ></div>
     <div
       id="bgBlack"
-      class="w-full h-full fixed top-0 bg-black opacity-50 z-20"
+      class="w-full h-full fixed top-0 bg-black opacity-50 hidden z-20"
     ></div>
+    <aside
+      id="lateralBar"
+      class="bg-white h-lvh fixed md:relative w-1/2 md:w-3/4 z-20 duration-300 -translate-x-full md:translate-x-0"
+    >
+      <div class="flex justify-between p-2 mt-4">
+        <div class="bg-black w-20 h-8"></div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-8 cursor-pointer md:hidden"
+          id="xIcon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+          />
+        </svg>
+      </div>
+      <div class="flex flex-col mt-12 w-full">
+        <a
+          class="duration-300 cursor-pointer hover:bg-black p-5 w-full hover:text-white"
+          id="cambioTelasBtn"
+          >Telas</a
+        >
+        <a
+          class="duration-300 cursor-pointer hover:bg-black p-5 w-full hover:text-white"
+          id="cambioVideosBtn"
+          >Videos</a
+        >
+      </div>
+    </aside>
     <div
       id="modal"
       class="hidden overflow-y-scroll bg-white w-4/5 lg:h-3/4 h-4/5 m-20 fixed top-0 z-30 place-self-center"
@@ -42,7 +98,7 @@
     </div>
     <div
       id="modaLogin"
-      class="bg-white m-20 p-4 lg:p-8 fixed top-0 z-30 place-self-center"
+      class="bg-white mt-20 self-center p-4 lg:p-8 fixed top-0 z-30"
     >
       <div class="h-full grid place-items-center">
         <div class="flex flex-col items-center">
@@ -71,54 +127,56 @@
         </div>
       </div>
     </div>
-    <div class="relative grid place-self-center">
-      <input
-        class="bg-slate-700 text-white lg:w-80 p-2 pl-10 m-8 outline-none rounded"
-        placeholder="Buscar productos"
-        type="text"
-        id="inputSearch"
-      />
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        class="w-6 text-[#9ca3af] mt-10 ml-10 absolute"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+    <div class="col-start-2 col-end-4">
+      <div class="relative grid place-self-center">
+        <input
+          class="bg-slate-700 text-white lg:w-80 p-2 pl-10 m-8 outline-none rounded"
+          placeholder="Buscar productos"
+          type="text"
+          id="inputSearch"
         />
-      </svg>
-    </div>
-    <main class="shadow-2xl p-4">
-      <div class="flex">
-        <div
-          class="bg-slate-700 rounded text-white m-4 p-1 w-auto cursor-pointer addTela"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 text-[#9ca3af] mt-10 ml-10 absolute"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6"
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+      </div>
+      <main class="shadow-2xl p-4">
+        <div class="flex">
+          <div
+            class="bg-slate-700 rounded text-white m-4 p-1 w-auto cursor-pointer addTela"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </div>
         </div>
-      </div>
-      <div class="grid place-items-center w-full">
-        <span id="spinner" class="loader"></span>
-      </div>
-      <div id="containerTelas"></div>
-    </main>
+        <div class="grid place-items-center w-full">
+          <span id="spinner" class="loader"></span>
+        </div>
+        <div id="containerTelas"></div>
+      </main>
+    </div>
     <script src="index.js"></script>
   </body>
 </html>

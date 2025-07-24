@@ -570,12 +570,12 @@ video {
   position: sticky;
 }
 
-.top-0 {
-  top: 0px;
-}
-
 .bottom-0 {
   bottom: 0px;
+}
+
+.top-0 {
+  top: 0px;
 }
 
 .-z-10 {
@@ -602,6 +602,10 @@ video {
   z-index: 50;
 }
 
+.z-10 {
+  z-index: 10;
+}
+
 .col-start-1 {
   grid-column-start: 1;
 }
@@ -616,6 +620,10 @@ video {
 
 .col-end-5 {
   grid-column-end: 5;
+}
+
+.col-end-4 {
+  grid-column-end: 4;
 }
 
 .m-12 {
@@ -638,6 +646,10 @@ video {
   margin: 2rem;
 }
 
+.m-auto {
+  margin: auto;
+}
+
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
@@ -646,6 +658,11 @@ video {
 .my-16 {
   margin-top: 4rem;
   margin-bottom: 4rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mb-10 {
@@ -722,6 +739,10 @@ video {
 
 .mt-8 {
   margin-top: 2rem;
+}
+
+.mt-20 {
+  margin-top: 5rem;
 }
 
 .block {
@@ -807,10 +828,6 @@ video {
 
 .h-px {
   height: 1px;
-}
-
-.h-svh {
-  height: 100svh;
 }
 
 .min-h-\[30rem\] {
@@ -932,6 +949,10 @@ video {
 
 .grid-cols-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .flex-col {
@@ -1278,6 +1299,14 @@ video {
 }
 
 @media (min-width: 768px) {
+  .md\:relative {
+    position: relative;
+  }
+
+  .md\:z-10 {
+    z-index: 10;
+  }
+
   .md\:mx-4 {
     margin-left: 1rem;
     margin-right: 1rem;
@@ -1285,6 +1314,10 @@ video {
 
   .md\:grid {
     display: grid;
+  }
+
+  .md\:hidden {
+    display: none;
   }
 
   .md\:w-3\/5 {
@@ -1295,8 +1328,21 @@ video {
     width: 100%;
   }
 
+  .md\:w-3\/4 {
+    width: 75%;
+  }
+
+  .md\:translate-x-0 {
+    --tw-translate-x: 0px;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .md\:grid-rows-3 {
@@ -1405,6 +1451,10 @@ video {
 
   .lg\:grid-cols-5 {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .lg\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .lg\:flex-row {

@@ -5,32 +5,44 @@ const closeModal = document.querySelector("#closeModal");
 const modal = document.querySelector("#modal");
 const innerModal = document.querySelector("#innerModal");
 const bgBlack = document.querySelector("#bgBlack");
+const bgBlackLogin = document.querySelector("#bgBlackLogin");
+const hamIcon = document.querySelector("#hamIcon");
+const xIcon = document.querySelector("#xIcon");
+const lateralBar = document.querySelector("#lateralBar");
+const cambioVideosBtn = document.querySelector("#cambioVideosBtn");
 const body = document.querySelector("body");
 const main = document.querySelector("main");
 let listadoColoresGlobal;
 let listadoColoresNewTelaGlobal = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const listadoTelas = await getAll();
-  imprimirTelas(listadoTelas);
-  filtrarNombre(listadoTelas);
   let user = localStorage.getItem("usuario");
   if (user) {
     user = JSON.parse(user);
     const { username, password } = user;
-    const consulta = await axios.get("/api/users/getAdmin", {
-      params: {
-        username,
-        password,
-      },
-    });
-    bgBlack.classList.add("hidden");
-    modaLogin.classList.add("hidden");
-    modaLogin.innerHTML = "";
+    try {
+      await axios.get("/api/users/getAdmin", {
+        params: {
+          username,
+          password,
+        },
+      });
+      bgBlackLogin.classList.add("hidden");
+      modaLogin.classList.add("hidden");
+      modaLogin.innerHTML = "";
+      const listadoTelas = await getAll();
+      imprimirVideos();
+      //imprimirTelas(listadoTelas);
+      //filtrarNombre(listadoTelas);
+    } catch (error) {
+      alert(error.response.data.message);
+    }
   } else {
     loginModal();
   }
   closeModalEvent();
+  hamIcon.addEventListener("click", toggleLateral);
+  xIcon.addEventListener("click", toggleLateral);
   eventoClickContainer();
   main.addEventListener("click", (e) => {
     if (e.target.closest(".addTela")) {
@@ -46,6 +58,12 @@ async function getAll() {
 }
 
 // Eventos Main
+
+function toggleLateral() {
+  body.classList.toggle("overflow-hidden");
+  lateralBar.classList.toggle("-translate-x-full");
+  bgBlack.classList.toggle("hidden");
+}
 
 function eventoClickContainer() {
   containerTelas.addEventListener("click", (e) => {
@@ -79,7 +97,7 @@ async function loginModal() {
           password,
         },
       });
-      bgBlack.classList.add("hidden");
+      bgBlackLogin.classList.add("hidden");
       modaLogin.classList.add("hidden");
       modaLogin.innerHTML = "";
       const user = JSON.stringify({ username: username, password: password });
@@ -771,11 +789,25 @@ function imprimirTelaCrear() {
   innerModal.appendChild(form);
 }
 
+function imprimirVideos() {
+  spinner.classList.remove("loader");
+}
+
 // funciones para input file
 
 function validarExtension(nombre, input) {
   const extension = nombre.split(".");
   if (extension[1] === "webp") {
+    return false;
+  } else {
+    input.value = "";
+    return true;
+  }
+}
+
+function validarExtensionVideo(nombre, input) {
+  const extension = nombre.split(".");
+  if (extension[1] === "mp4") {
     return false;
   } else {
     input.value = "";
