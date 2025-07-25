@@ -562,7 +562,6 @@ function cambioVideoModal(videoNum) {
       await axios.post(`/api/videos/guardarVideo${videoNum}`, data);
       alert("El video se ha cambiado con éxito");
     } catch (error) {
-      console.log(error);
       alert("Hubo un error al cambiar el video");
     }
   });
