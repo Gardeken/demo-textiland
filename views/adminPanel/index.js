@@ -70,17 +70,49 @@ function toggleLateral() {
 
 function eventoClickContainer() {
   containerMain.addEventListener("click", (e) => {
-    if (e.target.closest(".viewTela")) {
-      const idTela = e.target.closest(".viewTela").getAttribute("idtela");
-      viewTelaModal(idTela);
-    }
-    if (e.target.closest(".editTela")) {
-      const idTela = e.target.closest(".editTela").getAttribute("idtela");
-      editTelaModal(idTela);
-    }
-    if (e.target.closest(".deleteTela")) {
-      const idTela = e.target.closest(".deleteTela").getAttribute("idtela");
-      deleteTelaModal(idTela);
+    const telaElement = e.target.closest(".viewTela, .editTela, .deleteTela");
+    const videoElement = e.target.closest(".cambioVideo, .verVideo");
+    if (telaElement) {
+      const idTela = telaElement.getAttribute("idtela");
+      switch (true) {
+        case telaElement.classList.contains("viewTela"):
+          viewTelaModal(idTela);
+          break;
+        case telaElement.classList.contains("editTela"):
+          editTelaModal(idTela);
+          break;
+        case telaElement.classList.contains("deleteTela"):
+          deleteTelaModal(idTela);
+          break;
+        default:
+          break;
+      }
+    } else if (videoElement) {
+      openModalEvent();
+      innerModal.innerHTML = "";
+      switch (true) {
+        case videoElement.classList.contains("verVideo"):
+          if (Number(videoElement.id) === 1) {
+            innerModal.innerHTML = `<div class="flex p-4 justify-center">
+            <video controls muted autoplay src="../src/video-home-1.mp4"></video>
+          </div>`;
+            break;
+          } else if (Number(videoElement.id) === 2) {
+            innerModal.innerHTML = `<div class="flex p-4 justify-center">
+            <video controls muted autoplay src="../src/video-home-2.mp4"></video>
+          </div>`;
+            break;
+          } else break;
+        case videoElement.classList.contains("cambioVideo"):
+          if (Number(videoElement.id) === 1) {
+            cambioVideoModal(1);
+          } else if (Number(videoElement.id) === 2) {
+            cambioVideoModal(2);
+          } else break;
+
+        default:
+          break;
+      }
     }
   });
 }
@@ -209,6 +241,9 @@ async function createTelaModal() {
     });
     if (validarInput) {
       return alert("No puede dejar algún campo vacío");
+    }
+    if (!inputPhoto.value) {
+      return alert("Debe agregar una imagen de la tela");
     }
     if (listadoColoresNewTelaGlobal.length < 1) {
       return alert("Debe agregar un color");
@@ -431,6 +466,113 @@ function closeModalEvent() {
 function openModalEvent() {
   bgBlack.classList.remove("hidden");
   modal.classList.remove("hidden");
+}
+
+function cambioVideoModal(videoNum) {
+  openModalEvent();
+  innerModal.innerHTML = "";
+  if (videoNum === 1) {
+    innerModal.innerHTML = `
+    <div class="flex flex-col gap-4 p-4 justify-center text-white">
+          <video controls muted autoplay id="videoActive" class="w-96 lg:w-1/2 m-auto" src="../src/video-home-1.mp4"></video>
+          <form
+            class="flex flex-col gap-4 text-center justify-center"
+            id="formCambioVideo"
+          >
+            <label
+              for="inputVideo"
+              class="p-1 bg-slate-700 w-20 m-auto rounded cursor-pointer"
+            >
+              Cambiar
+            </label>
+            <input
+              type="file"
+              class="hidden"
+              name="inputVideo"
+              id="inputVideo"
+            />
+            <span class="text-black" id="nameVideo"></span>
+            <div>
+              <button id="aceptarVideo" class="py-1 px-3 bg-slate-700 rounded cursor-pointer">
+                Aceptar
+              </button>
+              <button id="cancelarVideo" class="py-1 px-3 bg-red-600 rounded cursor-pointer">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+    `;
+  } else if (videoNum === 2) {
+    innerModal.innerHTML = `
+    <div class="flex flex-col gap-4 p-4 justify-center text-white">
+          <video controls muted autoplay id="videoActive" class="w-48 m-auto" src="../src/video-home-2.mp4"></video>
+          <form
+            class="flex flex-col gap-4 text-center justify-center"
+            id="formCambioVideo"
+          >
+            <label
+              for="inputVideo"
+              class="p-1 bg-slate-700 w-20 m-auto rounded cursor-pointer"
+            >
+              Cambiar
+            </label>
+            <input
+              type="file"
+              class="hidden"
+              name="inputVideo"
+              id="inputVideo"
+            />
+            <span class="text-black" id="nameVideo"></span>
+            <div>
+              <button id="aceptarVideo" class="py-1 px-3 bg-slate-700 rounded cursor-pointer">
+                Aceptar
+              </button>
+              <button id="cancelarVideo" class="py-1 px-3 bg-red-600 rounded cursor-pointer">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+        `;
+  }
+  const formCambioVideo = document.querySelector("#formCambioVideo");
+  const inputVideo = document.querySelector("#inputVideo");
+  const aceptarVideo = document.querySelector("#aceptarVideo");
+  const cancelarVideo = document.querySelector("#cancelarVideo");
+  const nameVideo = document.querySelector("#nameVideo");
+  inputVideo.addEventListener("change", () => {
+    const tamaño = transformarBytes(inputVideo.files[0].size);
+    const extension = validarExtensionVideo(
+      inputVideo.files[0].name,
+      inputVideo
+    );
+    if (tamaño > 15) {
+      return alert("El archivo es muy pesado");
+    } else if (extension) {
+      return alert("Solo se pueden cargar archivos .mp4");
+    }
+    nameVideo.innerHTML = inputVideo.files[0].name;
+  });
+  aceptarVideo.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const data = new FormData(formCambioVideo);
+    try {
+      await axios.delete(`/api/videos/eliminarVideo${videoNum}`);
+      await axios.post(`/api/videos/guardarVideo${videoNum}`, data);
+      alert("El video se ha cambiado con éxito");
+    } catch (error) {
+      console.log(error);
+      alert("Hubo un error al cambiar el video");
+    }
+  });
+  cancelarVideo.addEventListener("click", (e) => {
+    e.preventDefault();
+    innerModal.innerHTML = "";
+    bgBlack.classList.add("hidden");
+    modal.classList.add("hidden");
+    body.classList.remove("overflow-hidden");
+  });
 }
 
 // Filtros
@@ -813,7 +955,7 @@ function imprimirVideos() {
           >
             <span>Video home 1</span>
             <div class="flex text-white gap-4">
-              <div class="p-1 bg-slate-700 rounded cursor-pointer">
+              <div id="1" class="p-1 bg-slate-700 rounded cursor-pointer verVideo">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -834,7 +976,7 @@ function imprimirVideos() {
                   />
                 </svg>
               </div>
-              <button class="p-1 bg-slate-700 rounded cursor-pointer">
+              <button id="1" class="p-1 bg-slate-700 rounded cursor-pointer cambioVideo">
                 Cambiar
               </button>
             </div>
@@ -844,7 +986,7 @@ function imprimirVideos() {
           >
             <span>Video home 2</span>
             <div class="flex text-white gap-4">
-              <div class="p-1 bg-slate-700 rounded cursor-pointer">
+              <div id="2" class="p-1 bg-slate-700 rounded cursor-pointer verVideo">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -865,7 +1007,7 @@ function imprimirVideos() {
                   />
                 </svg>
               </div>
-              <button class="p-1 bg-slate-700 rounded cursor-pointer">
+              <button id="2" class="p-1 bg-slate-700 rounded cursor-pointer cambioVideo">
                 Cambiar
               </button>
             </div>

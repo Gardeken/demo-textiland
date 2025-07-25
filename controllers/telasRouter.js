@@ -78,31 +78,30 @@ telasRouter.post(
   "/crearTela",
   upload.single("inputPhoto"),
   async (req, res) => {
-    if (req.file === undefined) {
-      return res.status(400).json({
-        message: "Tiene que cargar un archivo antes de enviar",
-      });
-    }
     const { path } = req.file;
     const { name, type, price, usos, composicion, rendimiento } = req.body;
     const { listaColores } = req.query;
     const id = Date.now();
-    const validarTela = await Tela.findOne({ name });
     try {
-      const newTela = new Tela();
-      newTela.name = name;
-      newTela.type = type;
-      newTela.price = price;
-      newTela.usos_sugeridos = usos;
-      newTela.composicion = composicion;
-      newTela.rendimiento = rendimiento;
-      newTela.photo = path;
-      newTela.colores = listaColores;
-      newTela.id = id;
-      newTela.save();
-      res.status(200).json({ msg: "La tela se ha creado con éxito" });
+      const validarTela = await Tela.findOne({ name });
+      res.status(400).json({ msg: "La tela ya existe" });
     } catch (error) {
-      res.status(400).json({ msg: "Hubo un error al crear la tela" });
+      try {
+        const newTela = new Tela();
+        newTela.name = name;
+        newTela.type = type;
+        newTela.price = price;
+        newTela.usos_sugeridos = usos;
+        newTela.composicion = composicion;
+        newTela.rendimiento = rendimiento;
+        newTela.photo = path;
+        newTela.colores = listaColores;
+        newTela.id = id;
+        newTela.save();
+        res.status(200).json({ msg: "La tela se ha creado con éxito" });
+      } catch (error) {
+        res.status(400).json({ msg: "Hubo un error al crear la tela" });
+      }
     }
   }
 );
@@ -113,8 +112,6 @@ telasRouter.delete("/eliminarTela", async (req, res) => {
   let { idTela } = req.query;
   try {
     const telaAeliminar = await Tela.findOne({ id: idTela });
-    const pathTela = telaAeliminar.photo;
-    const listPath = pathTela.split("/");
     await fs.unlink(telaAeliminar.photo);
     await Tela.findOneAndDelete({ id: idTela });
     res.status(200).json({

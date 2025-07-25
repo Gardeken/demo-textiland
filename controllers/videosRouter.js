@@ -18,8 +18,50 @@ const storageVideo2 = multer.diskStorage({
     cb(null, "video-home-2" + "." + exp[1]);
   },
 });
-const uploadVideo1 = multer({ storageVideo1 });
-const uploadVideo2 = multer({ storageVideo2 });
+const uploadVideo1 = multer({ storage: storageVideo1 });
+const uploadVideo2 = multer({ storage: storageVideo2 });
 const fs = require("fs").promises;
+
+videosRouter.delete("/eliminarVideo1", async (req, res) => {
+  try {
+    await fs.unlink("src/video-home-1.mp4");
+    res.status(200).json("El video se ha borrado con éxito");
+  } catch (error) {
+    res.status(200).json("Hubo un error al cambiar el video");
+  }
+});
+
+videosRouter.delete("/eliminarVideo2", async (req, res) => {
+  try {
+    await fs.unlink("src/video-home-2.mp4");
+    res.status(200).json("El video se ha borrado con éxito");
+  } catch (error) {
+    res.status(200).json("Hubo un error al cambiar el video");
+  }
+});
+
+videosRouter.post(
+  "/guardarVideo1",
+  uploadVideo1.single("inputVideo"),
+  async (req, res) => {
+    if (req.file) {
+      res.send("Video subido exitosamente.");
+    } else {
+      res.status(400).json("Hubo un error al cambiar el video");
+    }
+  }
+);
+
+videosRouter.post(
+  "/guardarVideo2",
+  uploadVideo1.single("inputVideo"),
+  async (req, res) => {
+    if (req.file) {
+      res.send("Video subido exitosamente.");
+    } else {
+      res.status(400).json("Hubo un error al cambiar el video");
+    }
+  }
+);
 
 module.exports = videosRouter;
