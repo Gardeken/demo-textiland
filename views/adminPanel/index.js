@@ -94,13 +94,28 @@ function eventoClickContainer() {
         case videoElement.classList.contains("verVideo"):
           if (Number(videoElement.id) === 1) {
             innerModal.innerHTML = `<div class="flex p-4 justify-center">
-            <video controls muted autoplay src="../src/video-home-1.mp4"></video>
+            <video id="videoShow" controls muted autoplay src="../src/video-home-1.mp4">
+              <source id="videoSource" src="../src/video-home-1.mp4" type="video/mp4">
+            </video>
           </div>`;
+            const videoShow = document.getElementById("videoShow");
+            const baseUrl = videoShow.src.split("?")[0];
+            const newUrl = baseUrl + "?v=" + Date.now();
+            videoShow.src = newUrl;
+            videoShow.load();
             break;
           } else if (Number(videoElement.id) === 2) {
             innerModal.innerHTML = `<div class="flex p-4 justify-center">
-            <video controls muted autoplay src="../src/video-home-2.mp4"></video>
+            <video id="videoShow" controls muted autoplay src="../src/video-home-2.mp4">
+              <source id="videoSource" src="../src/video-home-2.mp4" type="video/mp4">
+            </video>
           </div>`;
+            const videoShow = document.getElementById("videoShow");
+            const videoSource = document.getElementById("videoSource");
+            const baseUrl = videoSource.src.split("?")[0];
+            const newUrl = baseUrl + "?v=" + Date.now();
+            videoSource.src = newUrl;
+            videoShow.load();
             break;
           } else break;
         case videoElement.classList.contains("cambioVideo"):
@@ -474,7 +489,9 @@ function cambioVideoModal(videoNum) {
   if (videoNum === 1) {
     innerModal.innerHTML = `
     <div class="flex flex-col gap-4 p-4 justify-center text-white">
-          <video controls muted autoplay id="videoActive" class="w-96 lg:w-1/2 m-auto" src="../src/video-home-1.mp4"></video>
+          <video id="videoShow" controls muted autoplay id="videoActive" class="w-96 lg:w-1/2 m-auto">
+              <source id="videoSource" src="../src/video-home-1.mp4" type="video/mp4">
+          </video>
           <form
             class="flex flex-col gap-4 text-center justify-center"
             id="formCambioVideo"
@@ -506,7 +523,9 @@ function cambioVideoModal(videoNum) {
   } else if (videoNum === 2) {
     innerModal.innerHTML = `
     <div class="flex flex-col gap-4 p-4 justify-center text-white">
-          <video controls muted autoplay id="videoActive" class="w-48 m-auto" src="../src/video-home-2.mp4"></video>
+          <video id="videoShow" controls muted autoplay id="videoActive" class="w-48 m-auto">
+              <source id="videoSource" src="../src/video-home-1.mp4" type="video/mp4">
+          </video>
           <form
             class="flex flex-col gap-4 text-center justify-center"
             id="formCambioVideo"
@@ -536,6 +555,12 @@ function cambioVideoModal(videoNum) {
         </div>
         `;
   }
+  const videoShow = document.getElementById("videoShow");
+  const videoSource = document.getElementById("videoSource");
+  const baseUrl = videoSource.src.split("?")[0];
+  const newUrl = baseUrl + "?v=" + Date.now();
+  videoSource.src = newUrl;
+  videoShow.load();
   const formCambioVideo = document.querySelector("#formCambioVideo");
   const inputVideo = document.querySelector("#inputVideo");
   const aceptarVideo = document.querySelector("#aceptarVideo");
@@ -560,6 +585,10 @@ function cambioVideoModal(videoNum) {
     try {
       await axios.delete(`/api/videos/eliminarVideo${videoNum}`);
       await axios.post(`/api/videos/guardarVideo${videoNum}`, data);
+      innerModal.innerHTML = "";
+      bgBlack.classList.add("hidden");
+      modal.classList.add("hidden");
+      body.classList.remove("overflow-hidden");
       alert("El video se ha cambiado con éxito");
     } catch (error) {
       alert("Hubo un error al cambiar el video");

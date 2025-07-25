@@ -11,7 +11,18 @@ function toggleLateral() {
 
 document.addEventListener("DOMContentLoaded", () => {
   mostrarTelas();
+  recargarVideos(1);
+  recargarVideos(2);
 });
+
+function recargarVideos(numVideo) {
+  const videoShow = document.getElementById(`videoShow${numVideo}`);
+  const videoSource = document.getElementById(`videoSource${numVideo}`);
+  const baseUrl = videoSource.src.split("?")[0];
+  const newUrl = baseUrl + "?v=" + Date.now();
+  videoSource.src = newUrl;
+  videoShow.load();
+}
 
 async function mostrarTelas() {
   const telas = await getAllTelas();

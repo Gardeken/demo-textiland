@@ -102,11 +102,17 @@
       <div class="w-full mb-5 relative grid h-[30rem] overflow-hidden">
         <video
           class="absolute min-w-full min-h-full max-w-none object-cover"
-          src="../src/video-home-1.mp4"
+          id="videoShow1"
           autoplay
           muted
           loop
-        ></video>
+        >
+          <source
+            id="videoSource1"
+            src="../src/video-home-1.mp4"
+            type="video/mp4"
+          />
+        </video>
         <div class="bg-black absolute h-full w-full opacity-50"></div>
         <h3 class="absolute place-self-center text-center text-4xl text-white">
           Somos fabricantes de tejido de punto en Venezuela.
@@ -165,12 +171,18 @@
         </div>
         <video
           class="h-96 lg:h-3/4 self-center lg:self-start place-self-center"
+          id="videoShow2"
           autoplay
           muted
           loop
           playsinline
-          src="../src/video-home-2.mp4"
-        ></video>
+        >
+          <source
+            id="videoSource2"
+            src="../src/video-home-2.mp4"
+            type="video/mp4"
+          />
+        </video>
       </section>
       <section
         class="relative h-[38rem] lg:h-[35rem] text-white mb-16 flex flex-col justify-center items-center"
