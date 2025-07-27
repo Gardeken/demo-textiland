@@ -3,17 +3,21 @@ const x_icon = document.querySelector("#x-icon");
 const lateralBar = document.querySelector("#lateralBar");
 const BgBlack = document.querySelector("#BgBlack");
 const containerTelas = document.querySelector("#containerTelas");
+const containerContactanos = document.querySelector("#containerContactanos");
+const contactanosBtn = document.querySelector("#contactanosBtn");
+const body = document.querySelector("body");
 
 function toggleLateral() {
-  lateralBar.classList.toggle("-translate-x-full");
+  lateralBar.classList.toggle("-translate-x-[101%]");
   BgBlack.classList.toggle("hidden");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  mostrarTelas();
-  recargarVideos(1);
-  recargarVideos(2);
-});
+function toggleContact() {
+  containerContactanos.classList.toggle("hidden");
+  containerContactanos.classList.toggle("flex");
+  contactanosBtn.classList.toggle("bg-black");
+  contactanosBtn.classList.toggle("text-white");
+}
 
 function recargarVideos(numVideo) {
   const videoShow = document.getElementById(`videoShow${numVideo}`);
@@ -70,6 +74,13 @@ async function getAllTelas() {
   return consulta.data;
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  mostrarTelas();
+  recargarVideos(1);
+  recargarVideos(2);
+});
+
 ham_icon.addEventListener("click", toggleLateral);
 x_icon.addEventListener("click", toggleLateral);
 BgBlack.addEventListener("click", toggleLateral);
+contactanosBtn.addEventListener("click", toggleContact);
