@@ -4,7 +4,12 @@ const lateralBar = document.querySelector("#lateralBar");
 const BgBlack = document.querySelector("#BgBlack");
 const containerTelas = document.querySelector("#containerTelas");
 const containerContactanos = document.querySelector("#containerContactanos");
+const containerContactanosLat = document.querySelector(
+  "#containerContactanosLat"
+);
+const svgContactanos = document.querySelector("#svgContactanos");
 const contactanosBtn = document.querySelector("#contactanosBtn");
+const contactanosBtnLat = document.querySelector("#contactanosBtnLat");
 const body = document.querySelector("body");
 
 function toggleLateral() {
@@ -17,6 +22,14 @@ function toggleContact() {
   containerContactanos.classList.toggle("flex");
   contactanosBtn.classList.toggle("bg-black");
   contactanosBtn.classList.toggle("text-white");
+}
+
+function toggleContactLat() {
+  containerContactanosLat.classList.toggle("block");
+  containerContactanosLat.classList.toggle("hidden");
+  svgContactanos.classList.toggle("rotate-180");
+  contactanosBtnLat.classList.toggle("bg-black");
+  contactanosBtnLat.classList.toggle("text-white");
 }
 
 function recargarVideos(numVideo) {
@@ -84,3 +97,4 @@ ham_icon.addEventListener("click", toggleLateral);
 x_icon.addEventListener("click", toggleLateral);
 BgBlack.addEventListener("click", toggleLateral);
 contactanosBtn.addEventListener("click", toggleContact);
+contactanosBtnLat.addEventListener("click", toggleContactLat);
