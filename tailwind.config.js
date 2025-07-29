@@ -27,7 +27,28 @@ module.exports = {
     "grid-cols-5",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: {
+          purple: {
+            600: "var(--morado)",
+            500: "var(--morado-claro)",
+          },
+          orange: {
+            600: "var(--naranja)",
+          },
+          green: {
+            600: "var(--verde)",
+          },
+          gray: {
+            500: "var(--gris)",
+          },
+        },
+        secondary: {
+          gray: "var(--gris-claro)",
+        },
+      },
+    },
   },
   plugins: [],
 };

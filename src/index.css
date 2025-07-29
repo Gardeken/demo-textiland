@@ -1,3 +1,11 @@
+:root {
+  --naranja: #f7941d;
+  --verde: #5ab266;
+  --morado: #6f4d9c;
+  --morado-claro: #8c71b0;
+  --gris: #808285;
+  --gris-claro: #d1d5db;
+}
 html {
   scroll-behavior: smooth;
 }
