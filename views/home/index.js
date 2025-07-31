@@ -20,7 +20,7 @@ function toggleLateral() {
 function toggleContact() {
   containerContactanos.classList.toggle("hidden");
   containerContactanos.classList.toggle("flex");
-  contactanosBtn.classList.toggle("bg-primary-purple-600");
+  contactanosBtn.classList.toggle("bg-primary-purple-500");
   contactanosBtn.classList.toggle("text-white");
 }
 
@@ -28,7 +28,7 @@ function toggleContactLat() {
   containerContactanosLat.classList.toggle("block");
   containerContactanosLat.classList.toggle("hidden");
   svgContactanos.classList.toggle("rotate-180");
-  contactanosBtnLat.classList.toggle("bg-primary-purple-600");
+  contactanosBtnLat.classList.toggle("bg-primary-purple-500");
   contactanosBtnLat.classList.toggle("text-white");
 }
 
