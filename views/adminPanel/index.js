@@ -79,7 +79,7 @@ function eventoClickContainer() {
           if (Number(videoElement.id) === 1) {
             innerModal.innerHTML = `<div class="flex p-4 justify-center">
           <video
-            class="flex p-4 justify-center"
+            class="flex p-4 justify-center min-w-[10rem] max-w-[16rem] lg:min-w-[40rem] lg:max-w-[50rem]"
             id="videoShow"
             controls
             muted
@@ -103,7 +103,7 @@ function eventoClickContainer() {
           if (Number(videoElement.id) === 2) {
             innerModal.innerHTML = `<div class="flex p-4 justify-center">
           <video
-            class="flex p-4 justify-center"
+            class="flex p-4 justify-center min-w-[10rem] max-w-[16rem] lg:min-h-[20rem] lg:max-h-[30rem]"
             id="videoShow"
             controls
             muted
@@ -498,8 +498,8 @@ function cambioVideoModal(videoNum) {
   innerModal.innerHTML = "";
   if (videoNum === 1) {
     innerModal.innerHTML = `
-    <div class="flex flex-col gap-4 p-4 justify-center text-white">
-          <video id="videoShow" controls muted autoplay id="videoActive" class="w-96 lg:w-1/2 m-auto">
+    <div class="flex flex-col  gap-4 p-4 justify-center text-white">
+          <video id="videoShow" controls muted autoplay id="videoActive" class="min-w-[10rem] max-w-[16rem]  lg:min-w-[40rem] lg:max-w-[50rem]  m-auto">
               <source id="videoSource" src="../src/video-home-1.mp4" type="video/mp4">
           </video>
           <form
@@ -533,7 +533,7 @@ function cambioVideoModal(videoNum) {
   } else if (videoNum === 2) {
     innerModal.innerHTML = `
     <div class="flex flex-col gap-4 p-4 justify-center text-white">
-          <video id="videoShow" controls muted autoplay id="videoActive" class="w-48 m-auto">
+          <video id="videoShow" controls muted autoplay id="videoActive" class="min-w-[10rem] max-w-[16rem] lg:min-h-[30rem] lg:max-h-[30rem] m-auto">
               <source id="videoSource" src="../src/video-home-2.mp4" type="video/mp4">
           </video>
           <form
