@@ -78,24 +78,46 @@ function eventoClickContainer() {
         case videoElement.classList.contains("verVideo"):
           if (Number(videoElement.id) === 1) {
             innerModal.innerHTML = `<div class="flex p-4 justify-center">
-            <video id="videoShow" controls muted autoplay src="../src/video-home-1.mp4">
-              <source id="videoSource" src="../src/video-home-1.mp4" type="video/mp4">
-            </video>
-          </div>`;
-            const videoShow = document.getElementById("videoShow");
-            const baseUrl = videoShow.src.split("?")[0];
+          <video
+            class="flex p-4 justify-center"
+            id="videoShow"
+            controls
+            muted
+            autoplay
+          >
+            <source
+              id="videoSource"
+              src="../src/video-home-1.mp4"
+              type="video/mp4"
+            />
+          </video>
+        </div>`;
+            const videoShow = document.getElementById(`videoShow`);
+            const videoSource = document.getElementById(`videoSource`);
+            const baseUrl = videoSource.src.split("?")[0];
             const newUrl = baseUrl + "?v=" + Date.now();
-            videoShow.src = newUrl;
+            videoSource.src = newUrl;
             videoShow.load();
             break;
-          } else if (Number(videoElement.id) === 2) {
+          }
+          if (Number(videoElement.id) === 2) {
             innerModal.innerHTML = `<div class="flex p-4 justify-center">
-            <video id="videoShow" controls muted autoplay src="../src/video-home-2.mp4">
-              <source id="videoSource" src="../src/video-home-2.mp4" type="video/mp4">
-            </video>
-          </div>`;
-            const videoShow = document.getElementById("videoShow");
-            const videoSource = document.getElementById("videoSource");
+          <video
+            class="flex p-4 justify-center"
+            id="videoShow"
+            controls
+            muted
+            autoplay
+          >
+            <source
+              id="videoSource"
+              src="../src/video-home-2.mp4"
+              type="video/mp4"
+            />
+          </video>
+        </div>`;
+            const videoShow = document.getElementById(`videoShow`);
+            const videoSource = document.getElementById(`videoSource`);
             const baseUrl = videoSource.src.split("?")[0];
             const newUrl = baseUrl + "?v=" + Date.now();
             videoSource.src = newUrl;
@@ -512,7 +534,7 @@ function cambioVideoModal(videoNum) {
     innerModal.innerHTML = `
     <div class="flex flex-col gap-4 p-4 justify-center text-white">
           <video id="videoShow" controls muted autoplay id="videoActive" class="w-48 m-auto">
-              <source id="videoSource" src="../src/video-home-1.mp4" type="video/mp4">
+              <source id="videoSource" src="../src/video-home-2.mp4" type="video/mp4">
           </video>
           <form
             class="flex flex-col gap-4 text-center justify-center"
@@ -569,9 +591,11 @@ function cambioVideoModal(videoNum) {
   });
   aceptarVideo.addEventListener("click", async (e) => {
     e.preventDefault();
+    if (!inputVideo.value) {
+      return alert("Debe cargar una imagen");
+    }
     const data = new FormData(formCambioVideo);
     try {
-      await axios.delete(`/api/videos/eliminarVideo${videoNum}`);
       await axios.post(`/api/videos/guardarVideo${videoNum}`, data);
       innerModal.innerHTML = "";
       bgBlack.classList.add("hidden");

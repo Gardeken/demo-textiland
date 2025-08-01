@@ -54,7 +54,7 @@ videosRouter.post(
 
 videosRouter.post(
   "/guardarVideo2",
-  uploadVideo1.single("inputVideo"),
+  uploadVideo2.single("inputVideo"),
   async (req, res) => {
     if (req.file) {
       res.send("Video subido exitosamente.");
