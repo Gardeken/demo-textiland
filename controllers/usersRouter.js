@@ -6,9 +6,9 @@ userRouter.get("/getAdmin", async (req, res) => {
   const { username, password } = req.query;
   const consulta = await user.findOne({ username });
   if (consulta) {
-    const comparacion = await bcrypt.compare(password, consulta.password);
+    const comparacion = bcrypt.compare(password, consulta.password);
     if (comparacion) {
-      res.status(200).json({ message: "Contraseña válida" });
+      res.status(200).json({ message: "Contraseña válida", rol: consulta.rol });
     } else {
       res.status(401).json({ message: "Contraseña inválida" });
     }

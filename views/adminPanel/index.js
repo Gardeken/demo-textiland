@@ -21,37 +21,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   let user = localStorage.getItem("usuario");
   if (user) {
     user = JSON.parse(user);
-    const { username, password } = user;
+    const { username, password, rol } = user;
     try {
-      await axios.get("/api/users/getAdmin", {
+      const usuario = await axios.get("/api/users/getAdmin", {
         params: {
           username,
           password,
         },
       });
-      bgBlackLogin.classList.add("hidden");
-      modaLogin.classList.add("hidden");
-      modaLogin.innerHTML = "";
-      const listadoTelas = await getAll();
-      imprimirTelas(listadoTelas);
-      filtrarNombre(listadoTelas);
-      mostrarTelas(listadoTelas);
-      mostrarVideos();
+      imprimirMain(rol);
     } catch (error) {
       alert(error.response.data.message);
     }
   } else {
     loginModal();
   }
-  closeModalEvent();
-  hamIcon.addEventListener("click", toggleLateral);
-  xIcon.addEventListener("click", toggleLateral);
-  eventoClickContainer();
-  main.addEventListener("click", (e) => {
-    if (e.target.closest(".addTela")) {
-      createTelaModal();
-    }
-  });
 });
 
 async function getAll() {
@@ -141,10 +125,6 @@ function mostrarTelas(list) {
   });
 }
 
-function mostrarVideos() {
-  mostrarVideosBtn.addEventListener("click", imprimirVideos);
-}
-
 // Eventos Modal
 
 async function loginModal() {
@@ -153,6 +133,9 @@ async function loginModal() {
   aceptar.addEventListener("click", async () => {
     const username = document.querySelector("#inputName").value;
     const password = document.querySelector("#inputPass").value;
+    if (!username || !password) {
+      return alert("No puede dejar los campos vacíos");
+    }
     try {
       const consulta = await axios.get("/api/users/getAdmin", {
         params: {
@@ -163,7 +146,12 @@ async function loginModal() {
       bgBlackLogin.classList.add("hidden");
       modaLogin.classList.add("hidden");
       modaLogin.innerHTML = "";
-      const user = JSON.stringify({ username: username, password: password });
+      imprimirMain(consulta.data.rol);
+      const user = JSON.stringify({
+        username: username,
+        password: password,
+        rol: consulta.data.rol,
+      });
       localStorage.setItem("usuario", user);
     } catch (error) {
       alert(error.response.data.message);
@@ -626,9 +614,40 @@ function filtrarNombre(list) {
 
 // Imprimir
 
+async function imprimirMain(rol) {
+  bgBlackLogin.classList.add("hidden");
+  modaLogin.classList.add("hidden");
+  modaLogin.innerHTML = "";
+  if (rol === 1) {
+    const listadoTelas = await getAll();
+    imprimirTelas(listadoTelas);
+    filtrarNombre(listadoTelas);
+    mostrarTelas(listadoTelas);
+    mostrarVideosBtn.addEventListener("click", imprimirVideos);
+    closeModalEvent();
+    hamIcon.addEventListener("click", toggleLateral);
+    xIcon.addEventListener("click", toggleLateral);
+    eventoClickContainer();
+    main.addEventListener("click", (e) => {
+      if (e.target.closest(".addTela")) {
+        createTelaModal();
+      }
+    });
+  } else if (rol === 2) {
+    mostrarTelasBtn.classList.add("hidden");
+    imprimirVideos();
+    closeModalEvent();
+    hamIcon.addEventListener("click", toggleLateral);
+    xIcon.addEventListener("click", toggleLateral);
+    eventoClickContainer();
+  }
+}
+
 function imprimirTelas(listTelas) {
   containerMain.innerHTML = "";
   spinner.classList.remove("loader");
+  const addTela = document.querySelector(".addTela");
+  addTela.classList.remove("hidden");
   listTelas.forEach((tela) => {
     const div = document.createElement("div");
     div.classList.add(
@@ -978,6 +997,8 @@ function imprimirTelaCrear() {
 function imprimirVideos() {
   containerMain.innerHTML = "";
   spinner.classList.remove("loader");
+  const addTela = document.querySelector(".addTela");
+  addTela.classList.add("hidden");
   containerMain.innerHTML = `<div
             class="flex justify-between border-slate-600 border-2 rounded m-4 p-3"
           >
