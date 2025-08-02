@@ -641,8 +641,8 @@ function filtrarNombre(list) {
 async function imprimirMain(rol) {
   bgBlackLogin.classList.add("hidden");
   modaLogin.classList.add("hidden");
-  modaLogin.innerHTML = "";
   if (rol === 1) {
+    modaLogin.innerHTML = "";
     const listadoTelas = await getAll();
     imprimirTelas(listadoTelas);
     filtrarNombre(listadoTelas);
@@ -658,12 +658,18 @@ async function imprimirMain(rol) {
       }
     });
   } else if (rol === 2) {
+    modaLogin.innerHTML = "";
     mostrarTelasBtn.classList.add("hidden");
     imprimirVideos();
     closeModalEvent();
     hamIcon.addEventListener("click", toggleLateral);
     xIcon.addEventListener("click", toggleLateral);
     eventoClickContainer();
+  } else {
+    bgBlackLogin.classList.remove("hidden");
+    modaLogin.classList.remove("hidden");
+    loginModal();
+    localStorage.removeItem("usuario");
   }
 }
 
