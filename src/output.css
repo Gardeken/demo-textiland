@@ -1127,14 +1127,13 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
 
+.bg-primary-orange-600 {
+  background-color: var(--naranja);
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;
-}
-
-.object-cover {
-  -o-object-fit: cover;
-     object-fit: cover;
 }
 
 .object-fill {
@@ -1227,6 +1226,10 @@ video {
 
 .pt-6 {
   padding-top: 1.5rem;
+}
+
+.pt-2 {
+  padding-top: 0.5rem;
 }
 
 .text-center {
@@ -1479,12 +1482,12 @@ video {
     height: 15rem;
   }
 
-  .lg\:h-96 {
-    height: 24rem;
-  }
-
   .lg\:h-\[35rem\] {
     height: 35rem;
+  }
+
+  .lg\:max-h-96 {
+    max-height: 24rem;
   }
 
   .lg\:max-h-\[30rem\] {
@@ -1578,6 +1581,18 @@ video {
 
   .lg\:p-8 {
     padding: 2rem;
+  }
+
+  .lg\:pb-8 {
+    padding-bottom: 2rem;
+  }
+
+  .lg\:pb-16 {
+    padding-bottom: 4rem;
+  }
+
+  .lg\:pb-12 {
+    padding-bottom: 3rem;
   }
 
   .lg\:text-justify {
