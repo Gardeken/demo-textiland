@@ -596,7 +596,7 @@ function cambioVideoModal(videoNum) {
     }
     const videoData = new FormData(formCambioVideo);
     try {
-      await axios.post(`/api/videos/eliminarVideo${videoNum}`);
+      await axios.delete(`/api/videos/eliminarVideo${videoNum}`);
       await axios.post(`/api/videos/guardarVideo${videoNum}`, videoData);
       innerModal.innerHTML = "";
       bgBlack.classList.add("hidden");
