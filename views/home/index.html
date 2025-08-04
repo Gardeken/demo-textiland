@@ -432,11 +432,19 @@
       <section
         class="relative h-[38rem] lg:h-[35rem] text-white mb-16 flex flex-col justify-center items-center"
       >
-        <img
-          src="../src/telas-bg.webp"
-          class="absolute h-full w-full -z-20"
-          alt=""
-        />
+        <video
+          class="absolute -z-20 w-full h-full object-fill"
+          id="videoShow3"
+          autoplay
+          muted
+          loop
+        >
+          <source
+            id="videoSource3"
+            src="../src/video-home-3.mp4"
+            type="video/mp4"
+          />
+        </video>
         <div class="bg-black opacity-50 absolute -z-10 h-full w-full"></div>
         <h3 class="m-6 text-4xl text-center font-bold">
           Convierte tu idea en una realidad.

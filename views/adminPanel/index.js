@@ -76,7 +76,7 @@ function eventoClickContainer() {
       innerModal.innerHTML = "";
       switch (true) {
         case videoElement.classList.contains("verVideo"):
-          if (Number(videoElement.id) === 1) {
+          if (Number(videoElement.id) === 1 || Number(videoElement.id) === 3) {
             innerModal.innerHTML = `<div class="flex p-4 justify-center">
           <video
             class="flex p-4 justify-center min-w-[10rem] max-w-[16rem] lg:min-w-[40rem] lg:max-w-[50rem]"
@@ -87,7 +87,7 @@ function eventoClickContainer() {
           >
             <source
               id="videoSource"
-              src="../src/video-home-1.mp4"
+              src="../src/video-home-${videoElement.id}.mp4"
               type="video/mp4"
             />
           </video>
@@ -129,6 +129,8 @@ function eventoClickContainer() {
             cambioVideoModal(1);
           } else if (Number(videoElement.id) === 2) {
             cambioVideoModal(2);
+          } else if (Number(videoElement.id) === 3) {
+            cambioVideoModal(3);
           } else break;
 
         default:
@@ -496,11 +498,11 @@ function openModalEvent() {
 function cambioVideoModal(videoNum) {
   openModalEvent();
   innerModal.innerHTML = "";
-  if (videoNum === 1) {
+  if (videoNum === 1 || videoNum === 3) {
     innerModal.innerHTML = `
     <div class="flex flex-col  gap-4 p-4 justify-center text-white">
           <video id="videoShow" controls muted autoplay id="videoActive" class="min-w-[10rem] max-w-[16rem]  lg:min-w-[40rem] lg:max-w-[50rem]  m-auto">
-              <source id="videoSource" src="../src/video-home-1.mp4" type="video/mp4">
+              <source id="videoSource" src="../src/video-home-${videoNum}.mp4" type="video/mp4">
           </video>
           <form
             class="flex flex-col gap-4 text-center justify-center"
@@ -1091,7 +1093,39 @@ function imprimirVideos() {
                 Cambiar
               </button>
             </div>
-          </div>`;
+          </div>
+          <div
+            class="flex justify-between border-slate-600 border-2 rounded m-4 p-3"
+          >
+            <span>Video home 3</span>
+            <div class="flex text-white gap-4">
+              <div id="3" class="p-1 bg-primary-gray-500 rounded cursor-pointer verVideo">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+              </div>
+              <button id="3" class="p-1 bg-primary-gray-500 rounded cursor-pointer cambioVideo">
+                Cambiar
+              </button>
+            </div>
+          </div>
+          `;
 }
 
 // funciones para input file

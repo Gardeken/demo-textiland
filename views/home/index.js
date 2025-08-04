@@ -91,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
   mostrarTelas();
   recargarVideos(1);
   recargarVideos(2);
+  recargarVideos(3);
 });
 
 ham_icon.addEventListener("click", toggleLateral);
