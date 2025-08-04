@@ -46,14 +46,16 @@ telasRouter.get("/getTelaType", async (req, res) => {
 
 telasRouter.get("/getTelaName", async (req, res) => {
   const { inputName } = req.query;
-  const validarTela = await Tela.find({ name: inputName });
-  if (validarTela.length < 1) {
+  try {
+    const validarTela = await Tela.find({ name: inputName });
+    if (validarTela.length < 1) {
+      return res.status(200).json(false);
+    } else {
+      return res.status(200).json(true);
+    }
+  } catch (error) {
     res.status(400).json({
-      msg: "La tela no existe",
-    });
-  } else {
-    res.status(200).json({
-      msg: "La tela ya existe",
+      msg: "Hubo un error al verificar la tela",
     });
   }
 });
@@ -83,25 +85,20 @@ telasRouter.post(
     const { listaColores } = req.query;
     const id = Date.now();
     try {
-      const validarTela = await Tela.findOne({ name });
-      res.status(400).json({ msg: "La tela ya existe" });
+      const newTela = new Tela();
+      newTela.name = name;
+      newTela.type = type;
+      newTela.price = price;
+      newTela.usos_sugeridos = usos;
+      newTela.composicion = composicion;
+      newTela.rendimiento = rendimiento;
+      newTela.photo = path;
+      newTela.colores = listaColores;
+      newTela.id = id;
+      newTela.save();
+      res.status(200).json({ msg: "La tela se ha creado con éxito" });
     } catch (error) {
-      try {
-        const newTela = new Tela();
-        newTela.name = name;
-        newTela.type = type;
-        newTela.price = price;
-        newTela.usos_sugeridos = usos;
-        newTela.composicion = composicion;
-        newTela.rendimiento = rendimiento;
-        newTela.photo = path;
-        newTela.colores = listaColores;
-        newTela.id = id;
-        newTela.save();
-        res.status(200).json({ msg: "La tela se ha creado con éxito" });
-      } catch (error) {
-        res.status(400).json({ msg: "Hubo un error al crear la tela" });
-      }
+      res.status(400).json({ msg: "Hubo un error al crear la tela" });
     }
   }
 );

@@ -203,9 +203,9 @@ async function createTelaModal() {
       const containerInput = document.querySelector("#containerInput");
       containerInput.classList.add("p-4");
       containerInput.innerHTML = `
-      <input id="inputNewColorName" placeholder="Nombre del color'" class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white" type="text">
-      <input id="inputNewColor" placeholder="Coloque el color así '#FFFFFF'" class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white" type="text">
-      <button id="aceptarBtnNC" class="p-2 w-20 text-white bg-primary-purple-600 rounded">Aceptar</button>
+      <input id="inputNewColorName" placeholder="Nombre del color'" class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white" type="text">
+      <input id="inputNewColor" placeholder="Coloque el color así '#FFFFFF'" class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white" type="text">
+      <button id="aceptarBtnNC" class="p-2 w-20 text-white bg-primary-gray-500 rounded">Aceptar</button>
       `;
       const aceptarBtnNC = document.querySelector("#aceptarBtnNC");
       aceptarBtnNC.addEventListener("click", (e) => {
@@ -281,23 +281,23 @@ async function createTelaModal() {
           inputName,
         },
       });
-      alert("La tela ya existe");
-    } catch (error) {
-      try {
-        const crear = axios.post("/api/telas/crearTela", data, {
+      if (!validarTela.data) {
+        const crear = await axios.post("/api/telas/crearTela", data, {
           params: { listaColores: JSON.stringify(listadoColoresNewTelaGlobal) },
         });
+        const listadoTelas = await getAll();
         innerModal.innerHTML = "";
         bgBlack.classList.add("hidden");
         modal.classList.add("hidden");
         body.classList.remove("overflow-hidden");
         alert("La tela se ha creado con éxito");
-        const listadoTelas = await getAll();
         imprimirTelas(listadoTelas);
         filtrarNombre(listadoTelas);
-      } catch (error) {
-        alert("Hubo un error al crear la tela");
+      } else {
+        alert("La tela ya existe");
       }
+    } catch (error) {
+      alert("Hubo un error al crear la tela");
     }
   });
   cancelBtn.addEventListener("click", (e) => {
@@ -328,22 +328,22 @@ async function viewTelaModal(idTela) {
         <div class="text-center m-4 grid">
           <h3 class="text-2xl">${data.name}</h3>
           <div
-            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-purple-600 m-4 place-self-center"
+            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-gray-500 m-4 place-self-center"
           ></div>
           <h4>Composición</h4>
           <span>${data.composicion}</span>
           <div
-            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-purple-600 m-4 place-self-center"
+            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-gray-500 m-4 place-self-center"
           ></div>
           <h4>Rendimiento</h4>
           <span>${data.rendimiento} mts</span>
           <div
-            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-purple-600 m-4 place-self-center"
+            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-gray-500 m-4 place-self-center"
           ></div>
           <h4>Uso sugerido</h4>
           <span>${data.usos_sugeridos}</span>
           <div
-            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-purple-600 m-4 place-self-center"
+            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-gray-500 m-4 place-self-center"
           ></div>
           <h4>Colores</h4>
           <div id="containerColores" class="grid grid-cols-5 gap-4 justify-center mt-4">
@@ -393,9 +393,9 @@ async function editTelaModal(idTela) {
       const containerInput = document.querySelector("#containerInput");
       containerInput.classList.add("p-4");
       containerInput.innerHTML = `
-      <input id="inputNewColorName" placeholder="Nombre del color'" class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white" type="text">
-      <input id="inputNewColor" placeholder="Coloque el color así '#FFFFFF'" class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white" type="text">
-      <button id="aceptarBtnNC" class="p-2 w-20 text-white bg-primary-purple-600 rounded">Aceptar</button>
+      <input id="inputNewColorName" placeholder="Nombre del color'" class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white" type="text">
+      <input id="inputNewColor" placeholder="Coloque el color así '#FFFFFF'" class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white" type="text">
+      <button id="aceptarBtnNC" class="p-2 w-20 text-white bg-primary-gray-500 rounded">Aceptar</button>
       `;
       const aceptarBtnNC = document.querySelector("#aceptarBtnNC");
       aceptarBtnNC.addEventListener("click", () => {
@@ -508,7 +508,7 @@ function cambioVideoModal(videoNum) {
           >
             <label
               for="inputVideo"
-              class="p-1 bg-primary-purple-600 w-20 m-auto rounded cursor-pointer"
+              class="p-1 bg-primary-gray-500 w-20 m-auto rounded cursor-pointer"
             >
               Cambiar
             </label>
@@ -520,7 +520,7 @@ function cambioVideoModal(videoNum) {
             />
             <span class="text-black" id="nameVideo"></span>
             <div>
-              <button id="aceptarVideo" class="py-1 px-3 bg-primary-purple-600 rounded cursor-pointer">
+              <button id="aceptarVideo" class="py-1 px-3 bg-primary-gray-500 rounded cursor-pointer">
                 Aceptar
               </button>
               <button id="cancelarVideo" class="py-1 px-3 bg-red-600 rounded cursor-pointer">
@@ -542,7 +542,7 @@ function cambioVideoModal(videoNum) {
           >
             <label
               for="inputVideo"
-              class="p-1 bg-primary-purple-600 w-20 m-auto rounded cursor-pointer"
+              class="p-1 bg-primary-gray-500 w-20 m-auto rounded cursor-pointer"
             >
               Cambiar
             </label>
@@ -554,7 +554,7 @@ function cambioVideoModal(videoNum) {
             />
             <span class="text-black" id="nameVideo"></span>
             <div>
-              <button id="aceptarVideo" class="py-1 px-3 bg-primary-purple-600 rounded cursor-pointer">
+              <button id="aceptarVideo" class="py-1 px-3 bg-primary-gray-500 rounded cursor-pointer">
                 Aceptar
               </button>
               <button id="cancelarVideo" class="py-1 px-3 bg-red-600 rounded cursor-pointer">
@@ -594,9 +594,10 @@ function cambioVideoModal(videoNum) {
     if (!inputVideo.value) {
       return alert("Debe cargar una imagen");
     }
-    const data = new FormData(formCambioVideo);
+    const videoData = new FormData(formCambioVideo);
     try {
-      await axios.post(`/api/videos/guardarVideo${videoNum}`, data);
+      await axios.post(`/api/videos/eliminarVideo${videoNum}`);
+      await axios.post(`/api/videos/guardarVideo${videoNum}`, videoData);
       innerModal.innerHTML = "";
       bgBlack.classList.add("hidden");
       modal.classList.add("hidden");
@@ -693,7 +694,7 @@ function imprimirTelas(listTelas) {
     const { name, id } = tela;
     div.innerHTML = `<span>${name}</span>
           <div class="text-white flex gap-2">
-            <div class="p-1 bg-primary-purple-600 rounded cursor-pointer viewTela" idtela="${id}">
+            <div class="p-1 bg-primary-gray-500 rounded cursor-pointer viewTela" idtela="${id}">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -716,7 +717,7 @@ function imprimirTelas(listTelas) {
                 />
               </svg>
             </div>
-            <div class="p-1 bg-primary-purple-600 rounded cursor-pointer editTela" idtela="${id}">
+            <div class="p-1 bg-primary-gray-500 rounded cursor-pointer editTela" idtela="${id}">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -734,7 +735,7 @@ function imprimirTelas(listTelas) {
                 />
               </svg>
             </div>
-            <div class="p-1 bg-primary-purple-600 rounded cursor-pointer deleteTela" idtela="${id}">
+            <div class="p-1 bg-primary-gray-500 rounded cursor-pointer deleteTela" idtela="${id}">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -766,7 +767,7 @@ function imprimirTelaEdit(data) {
   div.innerHTML = `<div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
     <label for="">Cambiar nombre</label>
     <input
-      class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white"
+      class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="nameInput"
       value="${data.name}"
       type="text"
@@ -775,7 +776,7 @@ function imprimirTelaEdit(data) {
   <div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
     <label for="">Cambiar composición</label>
     <input
-      class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white"
+      class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="composicionInput"
       value="${data.composicion}"
       type="text"
@@ -784,7 +785,7 @@ function imprimirTelaEdit(data) {
   <div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
     <label for="">Cambiar rendimiento</label>
     <input
-      class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white"
+      class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="priceInput"
       value="${data.price}"
       type="number"
@@ -793,7 +794,7 @@ function imprimirTelaEdit(data) {
   <div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
     <label for="">Cambiar usos sugeridos</label>
     <input
-      class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white"
+      class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="usosInput"
       value="${data.usos_sugeridos}"
       type="text"
@@ -802,7 +803,7 @@ function imprimirTelaEdit(data) {
   <div class="flex flex-col items-center md:items-start gap-4">
     <label class="lg:mx-4" for="">Colores</label>
     <div
-      class="cursor-pointer p-2 bg-primary-purple-600 text-white self-start mx-4 rounded addColor" 
+      class="cursor-pointer p-2 bg-primary-gray-500 text-white self-start mx-4 rounded addColor" 
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -824,7 +825,7 @@ function imprimirTelaEdit(data) {
     </div>
     <div class="w-full flex flex-col gap-4 mb-4" id="containerColores"></div>
     <div class="w-full flex justify-center gap-4">
-  <button id="aceptarBtnAT" class="p-2 mb-2 text-white bg-primary-purple-600 rounded">Aceptar</button>
+  <button id="aceptarBtnAT" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">Aceptar</button>
   <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">Cancelar</button>
 </div>
   </div>`;
@@ -843,7 +844,7 @@ function imprimirColor(listColor) {
     <span style="background-color: ${obj.color}" class="w-1/2 h-full border-black border-[1px]"></span>
     <span>${obj.colorName}</span>
     </div>
-    <div id-color="${obj.color}" class="p-2 bg-primary-purple-600 rounded cursor-pointer deleteColor">
+    <div id-color="${obj.color}" class="p-2 bg-primary-gray-500 rounded cursor-pointer deleteColor">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -874,7 +875,7 @@ function imprimirTelaCrear() {
 >
   <label for="">Nombre</label>
   <input
-    class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white"
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
     id="inputName"
     name="name"
     type="text"
@@ -885,7 +886,7 @@ function imprimirTelaCrear() {
 >
   <label for="">Tipo de tela</label>
   <input
-    class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white"
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
     id="inputType"
     name="type"
     type="number"
@@ -896,7 +897,7 @@ function imprimirTelaCrear() {
 >
   <label for="">Precio</label>
   <input
-    class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white"
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
     id="inputPrice"
     name="price"
     type="number"
@@ -907,7 +908,7 @@ function imprimirTelaCrear() {
 >
   <label for="">Usos sugeridos</label>
   <input
-    class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white"
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
     id="inputUsos"
     name="usos"
     type="text"
@@ -918,7 +919,7 @@ function imprimirTelaCrear() {
 >
   <label for="">Composición</label>
   <input
-    class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white"
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
     id="inputComposicion"
     name="composicion"
     type="text"
@@ -929,7 +930,7 @@ function imprimirTelaCrear() {
 >
   <label for="">Rendimiento</label>
   <input
-    class="w-60 md:w-full bg-primary-purple-600 outline-none p-2 rounded text-white"
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
     id="inputRendimiento"
     name="rendimiento"
     type="number"
@@ -945,7 +946,7 @@ function imprimirTelaCrear() {
   <div class="flex gap-4 items-center"> 
   <label
     for="inputPhoto"
-    class="cursor-pointer p-2 bg-primary-purple-600 text-white mx-4 rounded w-10"
+    class="cursor-pointer p-2 bg-primary-gray-500 text-white mx-4 rounded w-10"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -989,7 +990,7 @@ function imprimirTelaCrear() {
 <div class="flex flex-col items-center lg:items-start gap-4">
   <label class="lg:mx-4" for="">Colores</label>
   <div
-    class="cursor-pointer p-2 bg-primary-purple-600 text-white self-start mx-4 rounded addColor"
+    class="cursor-pointer p-2 bg-primary-gray-500 text-white self-start mx-4 rounded addColor"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -1013,7 +1014,7 @@ function imprimirTelaCrear() {
   <div class="w-full flex flex-col gap-4 mb-4" id="containerColores"></div>
 </div>
 <div class="w-full flex justify-center gap-4">
-  <button id="aceptarBtnCT" class="p-2 mb-2 text-white bg-primary-purple-600 rounded">
+  <button id="aceptarBtnCT" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
     Aceptar
   </button>
   <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">
@@ -1034,7 +1035,7 @@ function imprimirVideos() {
           >
             <span>Video home 1</span>
             <div class="flex text-white gap-4">
-              <div id="1" class="p-1 bg-primary-purple-600 rounded cursor-pointer verVideo">
+              <div id="1" class="p-1 bg-primary-gray-500 rounded cursor-pointer verVideo">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -1055,7 +1056,7 @@ function imprimirVideos() {
                   />
                 </svg>
               </div>
-              <button id="1" class="p-1 bg-primary-purple-600 rounded cursor-pointer cambioVideo">
+              <button id="1" class="p-1 bg-primary-gray-500 rounded cursor-pointer cambioVideo">
                 Cambiar
               </button>
             </div>
@@ -1065,7 +1066,7 @@ function imprimirVideos() {
           >
             <span>Video home 2</span>
             <div class="flex text-white gap-4">
-              <div id="2" class="p-1 bg-primary-purple-600 rounded cursor-pointer verVideo">
+              <div id="2" class="p-1 bg-primary-gray-500 rounded cursor-pointer verVideo">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -1086,7 +1087,7 @@ function imprimirVideos() {
                   />
                 </svg>
               </div>
-              <button id="2" class="p-1 bg-primary-purple-600 rounded cursor-pointer cambioVideo">
+              <button id="2" class="p-1 bg-primary-gray-500 rounded cursor-pointer cambioVideo">
                 Cambiar
               </button>
             </div>
@@ -1097,7 +1098,11 @@ function imprimirVideos() {
 
 function validarExtension(nombre, input) {
   const extension = nombre.split(".");
-  if (extension[1] === "webp") {
+  if (
+    extension[1] === "webp" ||
+    extension[1] === "png" ||
+    extension[1] === "jpg"
+  ) {
     return false;
   } else {
     input.value = "";
