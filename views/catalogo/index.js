@@ -9,6 +9,29 @@ const urlParams = new URLSearchParams(queryString);
 const typeTela = urlParams.get("type");
 const containerColorTelas = document.querySelector("#containerColorTelas");
 const body = document.querySelector("body");
+const containerContactanos = document.querySelector("#containerContactanos");
+const containerContactanosLat = document.querySelector(
+  "#containerContactanosLat"
+);
+const svgContactanos = document.querySelector("#svgContactanos");
+const contactanosBtn = document.querySelector("#contactanosBtn");
+const contactanosBtnLat = document.querySelector("#contactanosBtnLat");
+
+function toggleContact() {
+  containerContactanos.classList.toggle("hidden");
+  containerContactanos.classList.toggle("flex");
+  contactanosBtn.classList.toggle("bg-secondary-gray");
+  contactanosBtn.classList.toggle("text-white");
+}
+
+function toggleContactLat() {
+  containerContactanosLat.classList.toggle("block");
+  containerContactanosLat.classList.toggle("hidden");
+  svgContactanos.classList.toggle("rotate-180");
+  contactanosBtnLat.classList.toggle("bg-secondary-gray");
+  contactanosBtnLat.classList.toggle("text-white");
+}
+
 function toggleLateral() {
   body.classList.toggle("overflow-hidden");
   lateralBar.classList.toggle("-translate-x-full");
@@ -18,6 +41,7 @@ function toggleLateral() {
 ham_icon.addEventListener("click", toggleLateral);
 x_icon.addEventListener("click", toggleLateral);
 BgBlack.addEventListener("click", toggleLateral);
+contactanosBtn.addEventListener("click", toggleContact);
 
 document.addEventListener("DOMContentLoaded", () => {
   const spinner = document.querySelector("#spinner");
