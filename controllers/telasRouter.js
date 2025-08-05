@@ -81,14 +81,15 @@ telasRouter.post(
   upload.single("inputPhoto"),
   async (req, res) => {
     const { path } = req.file;
-    const { name, type, price, usos, composicion, rendimiento } = req.body;
+    let { name, type, price, usos, composicion, rendimiento } = req.body;
     const { listaColores } = req.query;
     const id = Date.now();
+    price = price.replace(",", ".");
     try {
       const newTela = new Tela();
       newTela.name = name;
-      newTela.type = type;
-      newTela.price = price;
+      newTela.type = Number(type);
+      newTela.price = Number(price);
       newTela.usos_sugeridos = usos;
       newTela.composicion = composicion;
       newTela.rendimiento = rendimiento;

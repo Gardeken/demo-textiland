@@ -9,13 +9,18 @@ const bgBlackLogin = document.querySelector("#bgBlackLogin");
 const hamIcon = document.querySelector("#hamIcon");
 const xIcon = document.querySelector("#xIcon");
 const lateralBar = document.querySelector("#lateralBar");
-const cambioVideosBtn = document.querySelector("#cambioVideosBtn");
-const mostrarTelasBtn = document.querySelector("#mostrarTelasBtn");
-const mostrarVideosBtn = document.querySelector("#mostrarVideosBtn");
 const body = document.querySelector("body");
+const containerAsideBtns = document.querySelector("#containerAsideBtns");
 const main = document.querySelector("main");
 let listadoColoresGlobal;
 let listadoColoresNewTelaGlobal = [];
+let tipos = {
+  1: "Lycra",
+  2: "Dry",
+  3: "Jersey",
+  4: "Flee",
+  5: "RIBB",
+};
 
 document.addEventListener("DOMContentLoaded", async () => {
   let user = localStorage.getItem("usuario");
@@ -142,11 +147,28 @@ function eventoClickContainer() {
 
 // Eventos Barra lateral
 
-function mostrarTelas(list) {
+function toggleLateralBtn() {
+  hamIcon.addEventListener("click", toggleLateral);
+  xIcon.addEventListener("click", toggleLateral);
+}
+
+function eventoLateralTela(list) {
+  const mostrarTelasBtn = document.querySelector("#mostrarTelasBtn");
   mostrarTelasBtn.addEventListener("click", () => {
     imprimirTelas(list);
     filtrarNombre(list);
   });
+  closeModalEvent();
+}
+
+function eventoLateralVideo() {
+  const mostrarVideosBtn = document.querySelector("#mostrarVideosBtn");
+  mostrarVideosBtn.addEventListener("click", imprimirVideos);
+}
+
+function eventoLateralType() {
+  const mostrarTiposBtn = document.querySelector("#mostrarTiposBtn");
+  mostrarTiposBtn.addEventListener("click", imprimirTipos);
 }
 
 // Eventos Modal
@@ -322,6 +344,7 @@ async function viewTelaModal(idTela) {
   const { data } = consulta;
   const listadoColores = JSON.parse(data.colores);
   const div = document.createElement("div");
+  let precio = data.price;
   div.classList.add("lg:flex");
   div.innerHTML = `
   <div class="grid place-items-center">
@@ -339,6 +362,11 @@ async function viewTelaModal(idTela) {
           ></div>
           <h4>Rendimiento</h4>
           <span>${data.rendimiento} mts</span>
+          <div
+            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-gray-500 m-4 place-self-center"
+          ></div>
+          <h4>Precio</h4>
+          <span>$${precio.toString().replace(".", ",")}</span>
           <div
             class="w-4/5 h-[.125rem] rounded-2xl bg-primary-gray-500 m-4 place-self-center"
           ></div>
@@ -429,12 +457,20 @@ async function editTelaModal(idTela) {
   aceptarBtnAT.addEventListener("click", async () => {
     const nameInput = document.querySelector("#nameInput").value;
     const composicionInput = document.querySelector("#composicionInput").value;
-    const priceInput = document.querySelector("#priceInput").value;
+    const priceInput = document
+      .querySelector("#priceInput")
+      .value.replace(",", ".");
     const usosInput = document.querySelector("#usosInput").value;
+    const rendimientoInput = document.querySelector("#rendimientoInput").value;
+    const typeInput = document
+      .querySelector("#typeInput")
+      .value.replace(",", ".");
     const newData = {};
+    newData.rendimiento = rendimientoInput;
+    newData.type = Number(typeInput);
     newData.name = nameInput;
     newData.composicion = composicionInput;
-    newData.price = priceInput;
+    newData.price = Number(priceInput);
     newData.usos_sugeridos = usosInput;
     newData.colores = JSON.stringify(listadoColoresGlobal);
     newData.id = data.id;
@@ -644,29 +680,60 @@ function filtrarNombre(list) {
 async function imprimirMain(rol) {
   bgBlackLogin.classList.add("hidden");
   modaLogin.classList.add("hidden");
+  toggleLateralBtn();
   if (rol === 1) {
+    containerAsideBtns.innerHTML = `
+    <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarTelasBtn"
+          >Telas</a
+        >
+        <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarTiposBtn"
+          >Tipos de telas</a
+        >
+        <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarVideosBtn"
+          >Videos</a
+        >
+        <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarTextosBtn"
+          >Textos</a
+        >
+    `;
     modaLogin.innerHTML = "";
     const listadoTelas = await getAll();
     imprimirTelas(listadoTelas);
     filtrarNombre(listadoTelas);
-    mostrarTelas(listadoTelas);
-    mostrarVideosBtn.addEventListener("click", imprimirVideos);
-    closeModalEvent();
-    hamIcon.addEventListener("click", toggleLateral);
-    xIcon.addEventListener("click", toggleLateral);
+    eventoLateralTela(listadoTelas);
+    eventoLateralVideo();
     eventoClickContainer();
+    eventoLateralType();
     main.addEventListener("click", (e) => {
       if (e.target.closest(".addTela")) {
         createTelaModal();
       }
     });
   } else if (rol === 2) {
+    containerAsideBtns.innerHTML = `
+        <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarVideosBtn"
+          >Videos</a
+        >
+        <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarVideosBtn"
+          >Textos</a
+        >
+    `;
     modaLogin.innerHTML = "";
-    mostrarTelasBtn.classList.add("hidden");
     imprimirVideos();
     closeModalEvent();
-    hamIcon.addEventListener("click", toggleLateral);
-    xIcon.addEventListener("click", toggleLateral);
+    eventoLateralVideo();
     eventoClickContainer();
   } else {
     bgBlackLogin.classList.remove("hidden");
@@ -679,8 +746,11 @@ async function imprimirMain(rol) {
 function imprimirTelas(listTelas) {
   containerMain.innerHTML = "";
   spinner.classList.remove("loader");
-  const addTela = document.querySelector(".addTela");
-  addTela.classList.remove("hidden");
+  imprimirAdd(1);
+  const containerInputS = document.querySelector("#containerInputS");
+  const inputSearch = document.querySelector("#inputSearch");
+  inputSearch.classList.remove("cursor-default");
+  containerInputS.classList.remove("opacity-0");
   listTelas.forEach((tela) => {
     const div = document.createElement("div");
     div.classList.add(
@@ -737,7 +807,7 @@ function imprimirTelas(listTelas) {
                 />
               </svg>
             </div>
-            <div class="p-1 bg-primary-gray-500 rounded cursor-pointer deleteTela" idtela="${id}">
+            <div class="p-1 bg-red-600 rounded cursor-pointer deleteTela" idtela="${id}">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -759,6 +829,15 @@ function imprimirTelas(listTelas) {
 `;
     containerMain.appendChild(div);
   });
+}
+
+function imprimirTipos() {
+  const containerInputS = document.querySelector("#containerInputS");
+  const inputSearch = document.querySelector("#inputSearch");
+  inputSearch.classList.add("cursor-default");
+  containerInputS.classList.add("opacity-0");
+  containerMain.innerHTML = "";
+  imprimirAdd(2);
 }
 
 function imprimirTelaEdit(data) {
@@ -788,10 +867,37 @@ function imprimirTelaEdit(data) {
     <label for="">Cambiar rendimiento</label>
     <input
       class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+      id="rendimientoInput"
+      value="${data.rendimiento}"
+      type="number"
+    />
+  </div>
+  <div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
+    <label for="">Cambiar precio</label>
+    <input
+      class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="priceInput"
       value="${data.price}"
       type="number"
     />
+  </div>
+  <div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
+    <label for="">Cambiar tipo</label>
+    <select
+      class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+      id="typeInput"
+      value="${data.type}"
+      type="text"
+    >
+      <option value="${data.type}" selected disabled>${
+    tipos[data.type]
+  }</option>
+      <option value="1">Lycra</option>
+      <option value="2">Dry</option>
+      <option value="3">Jersey</option>
+      <option value="4">Flee</option>
+      <option value="5">RIBB</option>
+    </select>
   </div>
   <div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
     <label for="">Cambiar usos sugeridos</label>
@@ -846,7 +952,7 @@ function imprimirColor(listColor) {
     <span style="background-color: ${obj.color}" class="w-1/2 h-full border-black border-[1px]"></span>
     <span>${obj.colorName}</span>
     </div>
-    <div id-color="${obj.color}" class="p-2 bg-primary-gray-500 rounded cursor-pointer deleteColor">
+    <div id-color="${obj.color}" class="p-2 bg-red-600 rounded cursor-pointer deleteColor">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -1030,8 +1136,11 @@ function imprimirTelaCrear() {
 function imprimirVideos() {
   containerMain.innerHTML = "";
   spinner.classList.remove("loader");
-  const addTela = document.querySelector(".addTela");
-  addTela.classList.add("hidden");
+  imprimirAdd(0);
+  const containerInputS = document.querySelector("#containerInputS");
+  const inputSearch = document.querySelector("#inputSearch");
+  inputSearch.classList.add("cursor-default");
+  containerInputS.classList.add("opacity-0");
   containerMain.innerHTML = `<div
             class="flex justify-between border-slate-600 border-2 rounded m-4 p-3"
           >
@@ -1126,6 +1235,56 @@ function imprimirVideos() {
             </div>
           </div>
           `;
+}
+
+function imprimirAdd(typeAdd) {
+  const containerAdd = document.querySelector("#containerAdd");
+  if (typeAdd == 1) {
+    containerAdd.innerHTML = `
+    <div
+            class="bg-primary-gray-500 rounded text-white m-4 p-1 w-auto cursor-pointer addTela"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </div>
+    `;
+  } else if (typeAdd == 2) {
+    containerAdd.innerHTML = `
+    <div
+            class="bg-primary-gray-500 rounded text-white m-4 p-1 w-auto cursor-pointer addType"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </div>
+    `;
+  } else {
+    containerAdd.innerHTML = "";
+    return;
+  }
 }
 
 // funciones para input file
