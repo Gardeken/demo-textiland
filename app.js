@@ -6,6 +6,7 @@ const path = require("path");
 const telasRouter = require("./controllers/telasRouter");
 const userRouter = require("./controllers/usersRouter");
 const videosRouter = require("./controllers/videosRouter");
+const typesRouter = require("./controllers/typesRouter");
 const pass = process.env.MONGO_PASS;
 
 async function ConectarBD() {
@@ -29,5 +30,6 @@ app.use("/src", express.static(path.resolve("src")));
 app.use("/api/telas", telasRouter);
 app.use("/api/videos", videosRouter);
 app.use("/api/users", userRouter);
+app.use("/api/types", typesRouter);
 
 module.exports = app;

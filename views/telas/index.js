@@ -23,6 +23,7 @@ async function getTela() {
     composicion,
     rendimiento,
     usos_sugeridos,
+    ancho,
   } = data;
   colores = JSON.parse(colores);
 
@@ -46,9 +47,15 @@ async function getTela() {
             >
           </div>
           <div class="border-[1px] m-4 border-slate-600 w-3/4 lg:w-full"></div>
-          <div class="flex flex-col gap-4 p-4">
+          <div class="flex flex-col lg:flex-row gap-4 p-4">
+            <div class="flex flex-col">
             <span class="text-lg">Rendimiento</span>
             <span>${rendimiento} mts</span>
+            </div>
+            <div class="flex flex-col">
+            <span class="text-lg">Ancho</span>
+            <span>${ancho} mts</span>
+            </div>
           </div>
           <div class="border-[1px] m-4 border-slate-600 w-3/4 lg:w-full"></div>
 

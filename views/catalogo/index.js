@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const spinner = document.querySelector("#spinner");
   spinner.innerHTML = `<span class="loader"></span>`;
   getAllTelas();
+  getAllTypes();
 });
 
 async function getAllTelas() {
@@ -39,6 +40,30 @@ async function getAllTelas() {
   } else {
     imprimirTelas(data);
     imprimirColores(data);
+  }
+}
+
+async function getAllTypes() {
+  const containerIdTelas = document.querySelector("#containerIdTelas");
+  try {
+    const consulta = await axios.get("/api/types/getAll");
+    const listadoTypes = consulta.data;
+    listadoTypes.forEach((types) => {
+      const span = document.createElement("span");
+      span.classList.add(
+        "p-4",
+        "duration-300",
+        "cursor-pointer",
+        "hover:bg-primary-gray-500",
+        "hover:text-white",
+        "typesTela"
+      );
+      span.id = types.code;
+      span.innerHTML = types.name;
+      containerIdTelas.appendChild(span);
+    });
+  } catch (error) {
+    alert("Hubo un error al cargar los tipos de telas");
   }
 }
 
@@ -126,19 +151,15 @@ function filtrarPorColor(list) {
 }
 
 function filtrarPorTelas(list) {
-  const span = containerIdTelas.querySelectorAll("span");
-  span.forEach((div) => {
-    if (div.id == "0") {
-      div.addEventListener("click", () => {
-        imprimirTelas(list);
-        imprimirColores(list);
-      });
-    } else if (div.id) {
-      div.addEventListener("click", () => {
-        const newList = list.filter((tela) => tela.type === Number(div.id));
-        imprimirTelas(newList);
-        imprimirColores(newList);
-      });
+  const containerIdTelas = document.querySelector("#containerIdTelas");
+  containerIdTelas.addEventListener("click", (e) => {
+    if (e.target.id == "0") {
+      imprimirTelas(list);
+      imprimirColores(list);
+    } else {
+      const newList = list.filter((tela) => tela.type === e.target.id);
+      imprimirTelas(newList);
+      imprimirColores(newList);
     }
   });
 }

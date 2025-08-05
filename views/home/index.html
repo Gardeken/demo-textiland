@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="../src/output.css" rel="stylesheet" />
     <link rel="stylesheet" href="../src/index.css" />
+    <link rel="shortcut icon" href="../src/logo.ico" type="image/x-icon" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Textiland</title>
   </head>
   <body class="relative">
     <nav
-      class="sticky top-0 bg-primary-gray-500 text-white z-30 h-20 flex justify-between lg:justify-normal items-center"
+      id="navBar"
+      class="sticky top-0 bg-primary-gray-500 text-white z-30 h-16 flex justify-between lg:justify-normal items-center"
     >
-      <a href="/" class="w-40 h-full hidden lg:block" name="Logo">
+      <a href="/" class="h-full w-24 hidden lg:block" name="Logo">
         <img
           class="p-1 w-full h-full object-contain"
           src="../src/logo.webp"
@@ -20,28 +22,7 @@
         />
       </a>
       <div class="flex justify-between h-full w-full">
-        <div class="flex">
-          <a
-            class="lg:flex lg:items-center hidden hover:bg-secondary-gray duration-300 px-10"
-            href="/catalogo?type=1"
-            >Lycra</a
-          >
-          <a
-            class="lg:flex lg:items-center hidden hover:bg-secondary-gray duration-300 px-10"
-            href="/catalogo?type=2"
-            >Dry</a
-          >
-          <a
-            class="lg:flex lg:items-center hidden hover:bg-secondary-gray duration-300 px-10"
-            href="/catalogo?type=3"
-            >Jersey</a
-          >
-          <a
-            class="lg:flex lg:items-center hidden hover:bg-secondary-gray duration-300 px-10"
-            href="/catalogo?type=4"
-            >French terry</a
-          >
-        </div>
+        <div id="containerTypesT" class="flex"></div>
         <div class="hidden lg:flex">
           <div class="relative">
             <span

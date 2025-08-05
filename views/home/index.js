@@ -24,12 +24,63 @@ function toggleContact() {
   contactanosBtn.classList.toggle("text-white");
 }
 
+function toggleTypes(Btn, containerId) {
+  containerId.classList.toggle("hidden");
+  containerId.classList.toggle("flex");
+  Btn.classList.toggle("bg-secondary-gray");
+  Btn.classList.toggle("text-white");
+}
+
 function toggleContactLat() {
   containerContactanosLat.classList.toggle("block");
   containerContactanosLat.classList.toggle("hidden");
   svgContactanos.classList.toggle("rotate-180");
   contactanosBtnLat.classList.toggle("bg-secondary-gray");
   contactanosBtnLat.classList.toggle("text-white");
+}
+
+async function eventoNavType() {
+  const navBar = document.querySelector("#navBar");
+  navBar.addEventListener("click", async (e) => {
+    if (e.target.closest(".tipoTela")) {
+      const id = e.target.closest(".tipoTela").id;
+      const name = e.target.closest(".tipoTela").getAttribute("name");
+      const container = e.target.closest(".tipoTela");
+      if (container.classList.contains("containerTelas")) {
+        const Btn = container.querySelector("span");
+        const containerId = container.querySelector("div");
+        toggleTypes(container, containerId);
+      } else {
+        const div = document.createElement("div");
+        div.classList.add(
+          "absolute",
+          "flex",
+          "flex-col",
+          "bg-primary-gray-500",
+          "gap-4",
+          "p-4",
+          "w-60",
+          "top-16"
+        );
+        container.appendChild(div);
+        container.classList.add("bg-secondary-gray");
+        container.classList.add("text-white");
+        container.classList.add("containerTelas");
+        const consulta = await axios.get("/api/telas/getTelaType", {
+          params: {
+            Type: id,
+          },
+        });
+        const listadoTelas = consulta.data;
+        listadoTelas.forEach((tela) => {
+          const a = document.createElement("a");
+          a.innerHTML = tela.name;
+          a.href = `/telas/?id=${tela.id}&pag=home`;
+          div.appendChild(a);
+        });
+      }
+    }
+  });
 }
 
 function recargarVideos(numVideo) {
@@ -55,6 +106,36 @@ async function mostrarTelas() {
             </div>`;
     a.classList.add("shadow-2xl", "w-48", "h-48");
     containerTelas.appendChild(a);
+  }
+}
+
+async function mostrarTipos() {
+  try {
+    const consulta = await axios.get("/api/types/getAll");
+    const listadoTipos = consulta.data;
+    const containerTypesT = document.querySelector("#containerTypesT");
+    listadoTipos.forEach(async (tipos) => {
+      const span = document.createElement("span");
+      span.classList.add(
+        "relative",
+        "lg:flex",
+        "lg:items-center",
+        "hidden",
+        "hover:bg-secondary-gray",
+        "duration-300",
+        "px-10",
+        "cursor-pointer",
+        "tipoTela"
+      );
+      span.id = tipos.code;
+      span.setAttribute("name", tipos.name);
+      span.innerHTML = `
+      <span>${tipos.name}</span>      
+      `;
+      containerTypesT.appendChild(span);
+    });
+  } catch (error) {
+    alert("Hubo un error al cargar los tipos de telas");
   }
 }
 
@@ -87,8 +168,10 @@ async function getAllTelas() {
   return consulta.data;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   mostrarTelas();
+  await mostrarTipos();
+  await eventoNavType();
   recargarVideos(1);
   recargarVideos(2);
   recargarVideos(3);

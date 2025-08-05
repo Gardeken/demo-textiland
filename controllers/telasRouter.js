@@ -44,7 +44,7 @@ telasRouter.get("/getTelaType", async (req, res) => {
   }
 });
 
-telasRouter.get("/getTelaName", async (req, res) => {
+telasRouter.get("/getTelaNameValidar", async (req, res) => {
   const { inputName } = req.query;
   try {
     const validarTela = await Tela.find({ name: inputName });
@@ -68,7 +68,7 @@ telasRouter.put("/actualizarTela", async (req, res) => {
     const actualizar = await Tela.findOneAndUpdate({ id: id }, req.body);
     res.status(200).json({ msg: "La tela se ha actualizado con éxito" });
   } catch (error) {
-    res.status(404).json({
+    res.status(400).json({
       msg: "Hubo un error al actualizar la tela",
     });
   }
@@ -81,14 +81,15 @@ telasRouter.post(
   upload.single("inputPhoto"),
   async (req, res) => {
     const { path } = req.file;
-    let { name, type, price, usos, composicion, rendimiento } = req.body;
+    let { name, type, price, usos, composicion, rendimiento, ancho } = req.body;
     const { listaColores } = req.query;
     const id = Date.now();
     price = price.replace(",", ".");
     try {
       const newTela = new Tela();
       newTela.name = name;
-      newTela.type = Number(type);
+      newTela.type = type.toString();
+      newTela.ancho = ancho;
       newTela.price = Number(price);
       newTela.usos_sugeridos = usos;
       newTela.composicion = composicion;
@@ -99,6 +100,7 @@ telasRouter.post(
       newTela.save();
       res.status(200).json({ msg: "La tela se ha creado con éxito" });
     } catch (error) {
+      console.log(error);
       res.status(400).json({ msg: "Hubo un error al crear la tela" });
     }
   }
@@ -116,7 +118,6 @@ telasRouter.delete("/eliminarTela", async (req, res) => {
       msg: "La tela se ha eliminado con éxito",
     });
   } catch (error) {
-    console.log(error);
     res.status(400).json({
       msg: "Hubo un error al eliminar la tela",
     });

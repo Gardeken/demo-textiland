@@ -14,13 +14,6 @@ const containerAsideBtns = document.querySelector("#containerAsideBtns");
 const main = document.querySelector("main");
 let listadoColoresGlobal;
 let listadoColoresNewTelaGlobal = [];
-let tipos = {
-  1: "Lycra",
-  2: "Dry",
-  3: "Jersey",
-  4: "Flee",
-  5: "RIBB",
-};
 
 document.addEventListener("DOMContentLoaded", async () => {
   let user = localStorage.getItem("usuario");
@@ -49,6 +42,12 @@ async function getAll() {
   return data;
 }
 
+async function getAllTypes() {
+  const consulta = await axios.get("/api/types/getAll");
+  const { data } = consulta;
+  return data;
+}
+
 // Eventos Main
 
 function toggleLateral() {
@@ -61,6 +60,7 @@ function eventoClickContainer() {
   containerMain.addEventListener("click", (e) => {
     const telaElement = e.target.closest(".viewTela, .editTela, .deleteTela");
     const videoElement = e.target.closest(".cambioVideo, .verVideo");
+    const typeElement = e.target.closest(".deleteType, .editType");
     if (telaElement) {
       const idTela = telaElement.getAttribute("idtela");
       switch (true) {
@@ -72,6 +72,18 @@ function eventoClickContainer() {
           break;
         case telaElement.classList.contains("deleteTela"):
           deleteTelaModal(idTela);
+          break;
+        default:
+          break;
+      }
+    } else if (typeElement) {
+      const codeType = typeElement.getAttribute("code");
+      switch (true) {
+        case typeElement.classList.contains("editType"):
+          cambioNombreTypeModal(codeType);
+          break;
+        case typeElement.classList.contains("deleteType"):
+          deleteTypeModal(codeType);
           break;
         default:
           break;
@@ -166,9 +178,11 @@ function eventoLateralVideo() {
   mostrarVideosBtn.addEventListener("click", imprimirVideos);
 }
 
-function eventoLateralType() {
+function eventoLateralType(list) {
   const mostrarTiposBtn = document.querySelector("#mostrarTiposBtn");
-  mostrarTiposBtn.addEventListener("click", imprimirTipos);
+  mostrarTiposBtn.addEventListener("click", () => {
+    imprimirTipos(list);
+  });
 }
 
 // Eventos Modal
@@ -211,6 +225,14 @@ async function createTelaModal() {
   openModalEvent();
   imprimirTelaCrear();
   body.classList.add("overflow-hidden");
+  const typeInput = document.querySelector("#typeInput");
+  const listadoTypes = await getAllTypes();
+  listadoTypes.forEach((type) => {
+    const option = document.createElement("option");
+    option.value = type.code;
+    option.innerHTML = type.name;
+    typeInput.appendChild(option);
+  });
   innerModal.addEventListener("click", (e) => {
     //delete color
     if (e.target.closest(".deleteColor")) {
@@ -269,7 +291,7 @@ async function createTelaModal() {
     const tamaño = transformarBytes(inputPhoto.files[0].size);
     const extension = validarExtension(inputPhoto.files[0].name, inputPhoto);
     if (extension) {
-      return alert("Solo se pueden enviar archivos webp (.webp)");
+      return alert("Extensión inválida");
     }
     if (tamaño > 10) {
       inputPhoto.value = "";
@@ -300,7 +322,7 @@ async function createTelaModal() {
     const inputName = saveTelaData.querySelector("#inputName").value;
     const data = new FormData(saveTelaData);
     try {
-      const validarTela = await axios.get("/api/telas/getTelaName", {
+      const validarTela = await axios.get("/api/telas/getTelaNameValidar", {
         params: {
           inputName,
         },
@@ -342,6 +364,7 @@ async function viewTelaModal(idTela) {
   });
   body.classList.add("overflow-hidden");
   const { data } = consulta;
+  const { rendimiento } = data;
   const listadoColores = JSON.parse(data.colores);
   const div = document.createElement("div");
   let precio = data.price;
@@ -358,15 +381,22 @@ async function viewTelaModal(idTela) {
           <h4>Composición</h4>
           <span>${data.composicion}</span>
           <div
-            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-gray-500 m-4 place-self-center"
+            class="w-4/5 h-[.125rem]  rounded-2xl bg-primary-gray-500 m-4 place-self-center"
           ></div>
+          <div class="flex flex-wrap felx-col justify-center gap-4"> 
+          <div>
           <h4>Rendimiento</h4>
-          <span>${data.rendimiento} mts</span>
-          <div
-            class="w-4/5 h-[.125rem] rounded-2xl bg-primary-gray-500 m-4 place-self-center"
-          ></div>
+          <span>${rendimiento.toString().replace(".", ",")} mts</span>
+          </div>
+          <div>
+          <h4>Ancho</h4>
+          <span>${data.ancho}</span>
+          </div>
+          <div>
           <h4>Precio</h4>
           <span>$${precio.toString().replace(".", ",")}</span>
+          </div>
+          </div>
           <div
             class="w-4/5 h-[.125rem] rounded-2xl bg-primary-gray-500 m-4 place-self-center"
           ></div>
@@ -403,9 +433,22 @@ async function editTelaModal(idTela) {
   const consulta = await axios.get("/api/telas/getTela", {
     params: { idTela },
   });
+  const nombreType = await axios.get("/api/types/getTypeCode", {
+    params: {
+      code: consulta.data.type,
+    },
+  });
   body.classList.add("overflow-hidden");
   const { data } = consulta;
-  imprimirTelaEdit(data);
+  imprimirTelaEdit(data, nombreType.data.name);
+  const typeInput = document.querySelector("#typeInput");
+  const listadoTypes = await getAllTypes();
+  listadoTypes.forEach((type) => {
+    const option = document.createElement("option");
+    option.value = type.code;
+    option.innerHTML = type.name;
+    typeInput.appendChild(option);
+  });
   listadoColoresGlobal = JSON.parse(data.colores);
   innerModal.addEventListener("click", (e) => {
     //delete color
@@ -461,21 +504,22 @@ async function editTelaModal(idTela) {
       .querySelector("#priceInput")
       .value.replace(",", ".");
     const usosInput = document.querySelector("#usosInput").value;
-    const rendimientoInput = document.querySelector("#rendimientoInput").value;
-    const typeInput = document
-      .querySelector("#typeInput")
+    const rendimientoInput = document
+      .querySelector("#rendimientoInput")
       .value.replace(",", ".");
+    const anchoInput = document.querySelector("#anchoInput").value;
     const newData = {};
-    newData.rendimiento = rendimientoInput;
-    newData.type = Number(typeInput);
+    newData.rendimiento = Number(rendimientoInput);
+    newData.type = typeInput.value;
     newData.name = nameInput;
+    newData.ancho = anchoInput;
     newData.composicion = composicionInput;
     newData.price = Number(priceInput);
     newData.usos_sugeridos = usosInput;
     newData.colores = JSON.stringify(listadoColoresGlobal);
     newData.id = data.id;
     try {
-      const actualizar = await axios.put("/api/telas/actualizarTela", newData);
+      await axios.put("/api/telas/actualizarTela", newData);
       innerModal.innerHTML = "";
       bgBlack.classList.add("hidden");
       modal.classList.add("hidden");
@@ -654,6 +698,118 @@ function cambioVideoModal(videoNum) {
   });
 }
 
+async function deleteTypeModal(code) {
+  const confirmar = confirm(
+    "Está seguro de que quiere eliminar este tipo de tela?"
+  );
+  if (confirmar) {
+    try {
+      const validarTelas = await axios.get("/api/telas/getTelaType", {
+        params: {
+          Type: code,
+        },
+      });
+      const { data } = validarTelas;
+      if (data.length < 1) {
+        await axios.delete("/api/types/eliminarType", {
+          params: {
+            code,
+          },
+        });
+        const listadoTipos = await getAllTypes();
+        imprimirTipos(listadoTipos);
+      } else {
+        alert("Ya hay telas con este tipo");
+      }
+    } catch (error) {
+      alert("Hubo un error al eliminar el tipo de tela");
+    }
+  }
+}
+
+async function createTypeModal() {
+  openModalEvent();
+  imprimirTiposCrear();
+  body.classList.add("overflow-hidden");
+  const aceptar = document.querySelector("#aceptarBtnType");
+  const cancelar = document.querySelector("#cancelBtn");
+  aceptar.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const inputName = document.querySelector("#inputName");
+    if (!inputName.value) {
+      return alert("No puede dejar el campo vacío");
+    }
+    try {
+      const validarType = await axios.get("/api/types/getTypeNameVal", {
+        params: {
+          name: inputName.value,
+        },
+      });
+      const { data } = validarType;
+      if (data) {
+        return alert("El tipo de tela ya existe");
+      } else {
+        await axios.post("/api/types/crearType", { name: inputName.value });
+        alert("Se ha creado el tipo de tela con éxito");
+        const listadoType = await getAllTypes();
+        innerModal.innerHTML = "";
+        bgBlack.classList.add("hidden");
+        modal.classList.add("hidden");
+        body.classList.remove("overflow-hidden");
+        imprimirTipos(listadoType);
+      }
+    } catch (error) {
+      alert("Hubo un error al crear el tipo de tela");
+    }
+  });
+  cancelar.addEventListener("click", (e) => {
+    e.preventDefault();
+    innerModal.innerHTML = "";
+    bgBlack.classList.add("hidden");
+    modal.classList.add("hidden");
+    body.classList.remove("overflow-hidden");
+  });
+}
+
+async function cambioNombreTypeModal(code) {
+  openModalEvent();
+  const tipo = await axios.get("/api/types/getTypeCode", {
+    params: {
+      code,
+    },
+  });
+  imprimirTiposEdit(tipo.data.name);
+  body.classList.add("overflow-hidden");
+  const aceptar = document.querySelector("#aceptarBtnType");
+  const cancelar = document.querySelector("#cancelBtn");
+  const inputName = document.querySelector("#inputName");
+  aceptar.addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (!inputName.value) {
+      return alert("No puede dejar el campo vacío");
+    }
+    try {
+      await axios.put("/api/types/editarType", { code, name: inputName.value });
+      alert("El tipo de tela se ha editado con éxito");
+      const listadoType = await getAllTypes();
+      innerModal.innerHTML = "";
+      bgBlack.classList.add("hidden");
+      modal.classList.add("hidden");
+      body.classList.remove("overflow-hidden");
+      imprimirTipos(listadoType);
+    } catch (error) {
+      alert("Hubo un error al editar el tipo de tela");
+    }
+  });
+  cancelar.addEventListener("click", (e) => {
+    e.preventDefault();
+    innerModal.innerHTML = "";
+    bgBlack.classList.add("hidden");
+    modal.classList.add("hidden");
+    body.classList.remove("overflow-hidden");
+  });
+}
+
 // Filtros
 
 function filtrarNombre(list) {
@@ -698,23 +854,21 @@ async function imprimirMain(rol) {
           id="mostrarVideosBtn"
           >Videos</a
         >
-        <a
-          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
-          id="mostrarTextosBtn"
-          >Textos</a
-        >
     `;
     modaLogin.innerHTML = "";
     const listadoTelas = await getAll();
+    const listadoType = await getAllTypes();
     imprimirTelas(listadoTelas);
     filtrarNombre(listadoTelas);
     eventoLateralTela(listadoTelas);
     eventoLateralVideo();
     eventoClickContainer();
-    eventoLateralType();
+    eventoLateralType(listadoType);
     main.addEventListener("click", (e) => {
       if (e.target.closest(".addTela")) {
         createTelaModal();
+      } else if (e.target.closest(".addType")) {
+        createTypeModal();
       }
     });
   } else if (rol === 2) {
@@ -723,11 +877,6 @@ async function imprimirMain(rol) {
           class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
           id="mostrarVideosBtn"
           >Videos</a
-        >
-        <a
-          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
-          id="mostrarVideosBtn"
-          >Textos</a
         >
     `;
     modaLogin.innerHTML = "";
@@ -831,20 +980,132 @@ function imprimirTelas(listTelas) {
   });
 }
 
-function imprimirTipos() {
+function imprimirTipos(listType) {
   const containerInputS = document.querySelector("#containerInputS");
   const inputSearch = document.querySelector("#inputSearch");
   inputSearch.classList.add("cursor-default");
   containerInputS.classList.add("opacity-0");
   containerMain.innerHTML = "";
   imprimirAdd(2);
+  listType.forEach((type) => {
+    const div = document.createElement("div");
+    div.classList.add(
+      "flex",
+      "justify-between",
+      "m-4",
+      "text-center",
+      "border-2",
+      "rounded",
+      "p-2",
+      "border-black"
+    );
+    const { name, code } = type;
+    div.innerHTML = `<span>${name}</span>
+          <div class="text-white flex gap-2">
+            <div class="p-1 bg-primary-gray-500 rounded cursor-pointer editType" code="${code}">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 editType"
+                code="${code}"
+              >
+                <path
+                code="${code}
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                />
+              </svg>
+            </div>
+            <div class="p-1 bg-red-600 rounded cursor-pointer deleteType" code="${code}">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 deleteType"
+                code="${code}"
+              >
+                <path
+                code="${code}
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                />
+              </svg>
+            </div>
+          </div>
+`;
+    containerMain.appendChild(div);
+  });
 }
 
-function imprimirTelaEdit(data) {
+function imprimirTiposCrear() {
+  innerModal.innerHTML = "";
+  const form = document.createElement("form");
+  form.classList.add("flex", "flex-col", "gap-4", "p-8");
+  form.innerHTML = `
+    <div
+  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
+>
+  <label for="">Nombre</label>
+  <input
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+    id="inputName"
+    name="name"
+    type="text"
+  />
+</div>
+<div class="w-full flex justify-center gap-4">
+  <button id="aceptarBtnType" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
+    Aceptar
+  </button>
+  <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">
+    Cancelar
+  </button>
+</div>
+  `;
+  innerModal.appendChild(form);
+}
+
+function imprimirTiposEdit(name) {
+  innerModal.innerHTML = "";
+  const form = document.createElement("form");
+  form.classList.add("flex", "flex-col", "gap-4", "p-8");
+  form.innerHTML = `
+    <div
+  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
+>
+  <label for="">Nombre</label>
+  <input
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+    id="inputName"
+    name="name"
+    value="${name}"
+    type="text"
+  />
+</div>
+<div class="w-full flex justify-center gap-4">
+  <button id="aceptarBtnType" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
+    Aceptar
+  </button>
+  <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">
+    Cancelar
+  </button>
+</div>
+  `;
+  innerModal.appendChild(form);
+}
+
+function imprimirTelaEdit(data, nameType) {
   innerModal.innerHTML = "";
   const listadoColores = JSON.parse(data.colores);
   const div = document.createElement("div");
-  div.classList.add("flex", "flex-col", "gap-4");
+  div.classList.add("flex", "flex-col", "gap-4", "p-8");
   div.innerHTML = `<div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
     <label for="">Cambiar nombre</label>
     <input
@@ -873,6 +1134,15 @@ function imprimirTelaEdit(data) {
     />
   </div>
   <div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
+    <label for="">Cambiar ancho</label>
+    <input
+      class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+      id="anchoInput"
+      value="${data.ancho}"
+      type="text"
+    />
+  </div>
+  <div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
     <label for="">Cambiar precio</label>
     <input
       class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
@@ -889,14 +1159,7 @@ function imprimirTelaEdit(data) {
       value="${data.type}"
       type="text"
     >
-      <option value="${data.type}" selected disabled>${
-    tipos[data.type]
-  }</option>
-      <option value="1">Lycra</option>
-      <option value="2">Dry</option>
-      <option value="3">Jersey</option>
-      <option value="4">Flee</option>
-      <option value="5">RIBB</option>
+      <option value="${data.type}" selected disabled>${nameType}</option>
     </select>
   </div>
   <div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
@@ -993,12 +1256,14 @@ function imprimirTelaCrear() {
   class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
 >
   <label for="">Tipo de tela</label>
-  <input
-    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
-    id="inputType"
-    name="type"
-    type="number"
-  />
+  <select
+      class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+      id="typeInput"
+      name="type"
+      type="text"
+    >
+      <option value="" selected disabled>...</option>
+    </select>
 </div>
 <div
   class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
@@ -1042,6 +1307,17 @@ function imprimirTelaCrear() {
     id="inputRendimiento"
     name="rendimiento"
     type="number"
+  />
+</div>
+<div
+  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
+>
+  <label for="">Ancho</label>
+  <input
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+    id="inputAncho"
+    name="ancho"
+    type="text"
   />
 </div>
 <div
@@ -1294,7 +1570,8 @@ function validarExtension(nombre, input) {
   if (
     extension[1] === "webp" ||
     extension[1] === "png" ||
-    extension[1] === "jpg"
+    extension[1] === "jpg" ||
+    extension[1] === "jpeg"
   ) {
     return false;
   } else {
