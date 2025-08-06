@@ -40,7 +40,7 @@ typesRouter.post("/crearType", async (req, res) => {
   newType.name = name;
   newType.code = Date.now();
   try {
-    newType.save();
+    await newType.save();
     res.status(200).json("El tipo de tela se ha creado con éxito");
   } catch (error) {
     res.status(400).json("Hubo un error al crear el tipo de tela");

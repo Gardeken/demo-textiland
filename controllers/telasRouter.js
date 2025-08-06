@@ -147,7 +147,7 @@ telasRouter.post(
       newTela.photo = path;
       newTela.colores = listaColores;
       newTela.id = id;
-      newTela.save();
+      await newTela.save();
       res.status(200).json({ msg: "La tela se ha creado con éxito" });
     } catch (error) {
       res.status(400).json({ msg: "Hubo un error al crear la tela" });

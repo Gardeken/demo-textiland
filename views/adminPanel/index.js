@@ -12,8 +12,6 @@ const lateralBar = document.querySelector("#lateralBar");
 const body = document.querySelector("body");
 const containerAsideBtns = document.querySelector("#containerAsideBtns");
 const main = document.querySelector("main");
-let listadoColoresGlobal;
-let listadoColoresNewTelaGlobal = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
   let user = localStorage.getItem("usuario");
@@ -48,6 +46,12 @@ async function getAllTypes() {
   return data;
 }
 
+async function getAllColors() {
+  const consulta = await axios.get("/api/colores/getAll");
+  const { data } = consulta;
+  return data;
+}
+
 // Eventos Main
 
 function toggleLateral() {
@@ -61,6 +65,7 @@ function eventoClickContainer() {
     const telaElement = e.target.closest(".viewTela, .editTela, .deleteTela");
     const videoElement = e.target.closest(".cambioVideo, .verVideo");
     const typeElement = e.target.closest(".deleteType, .editType");
+    const colorElement = e.target.closest(".deleteColor, .editColor");
     if (telaElement) {
       const idTela = telaElement.getAttribute("idtela");
       switch (true) {
@@ -84,6 +89,18 @@ function eventoClickContainer() {
           break;
         case typeElement.classList.contains("deleteType"):
           deleteTypeModal(codeType);
+          break;
+        default:
+          break;
+      }
+    } else if (colorElement) {
+      const idColor = colorElement.id;
+      switch (true) {
+        case colorElement.classList.contains("editColor"):
+          editColorModal(idColor);
+          break;
+        case colorElement.classList.contains("deleteColor"):
+          deleteColor(idColor);
           break;
         default:
           break;
@@ -189,6 +206,14 @@ function eventoLateralVideo() {
   mostrarVideosBtn.addEventListener("click", imprimirVideos);
 }
 
+function eventoLateralColor() {
+  const mostrarColoresBtn = document.querySelector("#mostrarColoresBtn");
+  mostrarColoresBtn.addEventListener("click", async () => {
+    const listaColores = await getAllColors();
+    imprimirColores(listaColores);
+  });
+}
+
 function eventoLateralType() {
   const mostrarTiposBtn = document.querySelector("#mostrarTiposBtn");
   mostrarTiposBtn.addEventListener("click", async () => {
@@ -244,6 +269,123 @@ function closeModalEvent() {
 function openModalEvent() {
   bgBlack.classList.remove("hidden");
   modal.classList.remove("hidden");
+}
+
+// Eventos modal colores
+
+async function createColorModal() {
+  openModalEvent();
+  imprimirColorModalCrear();
+  const aceptar = document.querySelector("#aceptarBtnCrearColor");
+  const cancelar = document.querySelector("#cancelBtnCrearColor");
+  const form = document.querySelector("#saveColorData");
+  clearInputFile.addEventListener("click", () => {
+    inputPhoto.value = "";
+    namePhoto.innerHTML = "";
+  });
+  inputPhoto.addEventListener("change", () => {
+    const tamaño = transformarBytes(inputPhoto.files[0].size);
+    const extension = validarExtension(inputPhoto.files[0].name, inputPhoto);
+    if (extension) {
+      return alert("Extensión inválida");
+    }
+    if (tamaño > 10) {
+      inputPhoto.value = "";
+      return alert("No puede mandar un archivo tan pesado");
+    }
+    const namePhoto = document.querySelector("#namePhoto");
+    namePhoto.innerHTML = inputPhoto.files[0].name;
+  });
+  aceptar.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const inputName = document.querySelector("#inputName");
+    if (!inputName.value) {
+      return alert("No puede dejar los campos vacios");
+    }
+    try {
+      const newData = new FormData(form);
+      await axios.post("/api/colores/crearColor", newData);
+      alert("Se ha creado el color exitosamente");
+      innerModal.innerHTML = "";
+      bgBlack.classList.add("hidden");
+      modal.classList.add("hidden");
+      body.classList.remove("overflow-hidden");
+      const listaColores = await getAllColors();
+      imprimirColores(listaColores);
+    } catch (error) {
+      console.log(error);
+      alert("Hubo un error al crear el color");
+    }
+  });
+  cancelar.addEventListener("click", (e) => {
+    e.preventDefault();
+    innerModal.innerHTML = "";
+    bgBlack.classList.add("hidden");
+    modal.classList.add("hidden");
+    body.classList.remove("overflow-hidden");
+  });
+  body.classList.add("overflow-hidden");
+}
+
+async function editColorModal(idColor) {
+  openModalEvent();
+  const consulta = await axios.get("/api/colores/getOne", {
+    params: {
+      id: idColor,
+    },
+  });
+  imprimirColorModalEdit(consulta.data);
+  const aceptar = document.querySelector("#aceptarBtnEditColor");
+  const cancelar = document.querySelector("#cancelBtnEditColor");
+  const form = document.querySelector("#saveColorData");
+  const inputPhoto = document.querySelector("#inputPhoto");
+  body.classList.add("overflow-hidden");
+  clearInputFile.addEventListener("click", () => {
+    inputPhoto.value = "";
+    namePhoto.innerHTML = "";
+  });
+  inputPhoto.addEventListener("change", () => {
+    const tamaño = transformarBytes(inputPhoto.files[0].size);
+    const extension = validarExtension(inputPhoto.files[0].name, inputPhoto);
+    if (extension) {
+      return alert("Extensión inválida");
+    }
+    if (tamaño > 10) {
+      inputPhoto.value = "";
+      return alert("No puede mandar un archivo tan pesado");
+    }
+    const namePhoto = document.querySelector("#namePhoto");
+    namePhoto.innerHTML = inputPhoto.files[0].name;
+  });
+  aceptar.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const inputHex = document.querySelector("#inputHex");
+    const newData = new FormData(form);
+    try {
+      await axios.delete("/api/colores/eliminarFotoColor", {
+        params: { id: idColor },
+      });
+      await axios.put("/api/colores/actualizarColor", newData, {
+        params: { id: idColor },
+      });
+      innerModal.innerHTML = "";
+      bgBlack.classList.add("hidden");
+      modal.classList.add("hidden");
+      body.classList.remove("overflow-hidden");
+      const listaColores = await getAllColors();
+      imprimirColores(listaColores);
+      alert("El color se ha actualizado con éxito");
+    } catch (error) {
+      alert("Hubo un error al actualizar la tela");
+    }
+  });
+  cancelar.addEventListener("click", (e) => {
+    e.preventDefault();
+    innerModal.innerHTML = "";
+    bgBlack.classList.add("hidden");
+    modal.classList.add("hidden");
+    body.classList.remove("overflow-hidden");
+  });
 }
 
 // Eventos modal telas
@@ -393,7 +535,7 @@ async function viewTelaModal(idTela) {
   body.classList.add("overflow-hidden");
   const { data } = consulta;
   const { rendimiento } = data;
-  const listadoColores = JSON.parse(data.colores);
+  const listadoColores = await getAllColors();
   const div = document.createElement("div");
   let precio = data.price;
   div.classList.add("lg:flex");
@@ -442,16 +584,30 @@ async function viewTelaModal(idTela) {
   innerModal.appendChild(div);
   const containerColores = document.querySelector("#containerColores");
   listadoColores.forEach((obj) => {
-    const span = document.createElement("span");
-    span.style = `background-color: ${obj.color};`;
-    span.classList.add(
-      "w-8",
-      "h-8",
-      "rounded-full",
-      "border-black",
-      "border-[1px]"
-    );
-    containerColores.appendChild(span);
+    console.log(obj);
+    if (obj.photo) {
+      const img = document.createElement("img");
+      img.src = `../${obj.photo}`;
+      img.classList.add(
+        "w-8",
+        "h-8",
+        "rounded-full",
+        "border-black",
+        "border-[1px]"
+      );
+      containerColores.appendChild(img);
+    } else {
+      const span = document.createElement("span");
+      span.style = `background-color: ${obj.codigoHex};`;
+      span.classList.add(
+        "w-8",
+        "h-8",
+        "rounded-full",
+        "border-black",
+        "border-[1px]"
+      );
+      containerColores.appendChild(span);
+    }
   });
 }
 
@@ -478,52 +634,6 @@ async function editTelaModal(idTela) {
     option.innerHTML = type.name;
     typeInput.appendChild(option);
   });
-  listadoColoresGlobal = JSON.parse(data.colores);
-  innerModal.addEventListener("click", (e) => {
-    //delete color
-    if (e.target.closest(".deleteColor")) {
-      const colorSelect = e.target
-        .closest(".deleteColor")
-        .getAttribute("id-color");
-      listadoColoresGlobal = listadoColoresGlobal.filter(
-        (obj) => obj.color != colorSelect
-      );
-      imprimirColor(listadoColoresGlobal);
-    }
-    //create color
-    else if (e.target.closest(".addColor")) {
-      const containerInput = document.querySelector("#containerInput");
-      containerInput.classList.add("p-4");
-      containerInput.innerHTML = `
-      <input id="inputNewColorName" placeholder="Nombre del color'" class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white" type="text">
-      <input id="inputNewColor" placeholder="Coloque el color así '#FFFFFF'" class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white" type="text">
-      <button id="aceptarBtnNC" class="p-2 w-20 text-white bg-primary-gray-500 rounded">Aceptar</button>
-      `;
-      const aceptarBtnNC = document.querySelector("#aceptarBtnNC");
-      aceptarBtnNC.addEventListener("click", () => {
-        const colorObj = {};
-        const inputNewColorName =
-          document.querySelector("#inputNewColorName").value;
-        const inputNewColor = document.querySelector("#inputNewColor").value;
-        colorObj.color = inputNewColor;
-        colorObj.colorName = inputNewColorName;
-        if (
-          listadoColoresGlobal.some(
-            (obj) =>
-              obj.color === colorObj.color ||
-              obj.colorName === colorObj.colorName
-          )
-        ) {
-          return alert("Este color ya existe");
-        }
-        if (!inputNewColor || !inputNewColorName) {
-          return alert("No puede dejar algún campo vacío");
-        }
-        listadoColoresGlobal.push(colorObj);
-        imprimirColor(listadoColoresGlobal);
-      });
-    }
-  });
   const inputPhoto = document.querySelector("#inputPhoto");
   const clearInputFile = document.querySelector("#clearInputFile");
   inputPhoto.addEventListener("change", () => {
@@ -543,9 +653,9 @@ async function editTelaModal(idTela) {
     inputPhoto.value = "";
     namePhoto.innerHTML = "";
   });
-  const aceptarBtnAT = document.querySelector("#aceptarBtnAT");
-  const cancelBtn = document.querySelector("#cancelBtn");
-  aceptarBtnAT.addEventListener("click", async (e) => {
+  const aceptarBtnEditTela = document.querySelector("#aceptarBtnEditTela");
+  const cancelBtnEditTela = document.querySelector("#cancelBtnEditTela");
+  aceptarBtnEditTela.addEventListener("click", async (e) => {
     e.preventDefault();
     const newData = new FormData(formCambio);
     try {
@@ -568,7 +678,7 @@ async function editTelaModal(idTela) {
       alert("No se pudo actualizar la tela");
     }
   });
-  cancelBtn.addEventListener("click", (e) => {
+  cancelBtnEditTela.addEventListener("click", (e) => {
     e.preventDefault();
     innerModal.innerHTML = "";
     bgBlack.classList.add("hidden");
@@ -757,8 +867,8 @@ async function createTypeModal() {
   openModalEvent();
   imprimirTiposCrear();
   body.classList.add("overflow-hidden");
-  const aceptar = document.querySelector("#aceptarBtnType");
-  const cancelar = document.querySelector("#cancelBtn");
+  const aceptar = document.querySelector("#aceptarBtnCrearType");
+  const cancelar = document.querySelector("#cancelBtnCrearType");
   aceptar.addEventListener("click", async (e) => {
     e.preventDefault();
     const inputName = document.querySelector("#inputName");
@@ -806,8 +916,8 @@ async function cambioNombreTypeModal(code) {
   });
   imprimirTiposEdit(tipo.data.name);
   body.classList.add("overflow-hidden");
-  const aceptar = document.querySelector("#aceptarBtnType");
-  const cancelar = document.querySelector("#cancelBtn");
+  const aceptar = document.querySelector("#aceptarBtnEditType");
+  const cancelar = document.querySelector("#cancelBtnEditType");
   const inputName = document.querySelector("#inputName");
   aceptar.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -887,11 +997,6 @@ async function imprimirMain(rol) {
         >
         <a
           class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
-          id="mostrarTextosBtn"
-          >Textos</a
-        >
-        <a
-          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
           id="mostrarCerrarSesionBtn"
           >Cerrar sesión</a
         >
@@ -902,6 +1007,7 @@ async function imprimirMain(rol) {
     filtrarNombre(listadoTelas);
     eventoLateralTela(listadoTelas);
     eventoLateralVideo();
+    eventoLateralColor();
     eventoLateralCerrarSesion();
     eventoClickContainer();
     eventoLateralType();
@@ -910,6 +1016,8 @@ async function imprimirMain(rol) {
         createTelaModal();
       } else if (e.target.closest(".addType")) {
         createTypeModal();
+      } else if (e.target.closest(".addColor")) {
+        createColorModal();
       }
     });
   } else if (rol === 2) {
@@ -918,11 +1026,6 @@ async function imprimirMain(rol) {
           class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
           id="mostrarVideosBtn"
           >Videos</a
-        >
-        <a
-          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
-          id="mostrarTextosBtn"
-          >Textos</a
         >
         <a
           class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
@@ -1036,7 +1139,6 @@ function imprimirTelas(listTelas) {
 
 function imprimirTelaEdit(data, nameType) {
   innerModal.innerHTML = "";
-  const listadoColores = JSON.parse(data.colores);
   const form = document.createElement("form");
   form.id = "formCambio";
   form.enctype = "multipart/form-data";
@@ -1163,37 +1265,12 @@ function imprimirTelaEdit(data, nameType) {
       type="text"
     />
   </div>
-  <div class="flex flex-col items-center md:items-start gap-4">
-    <label class="lg:mx-4" for="">Colores</label>
-    <div
-      class="cursor-pointer p-2 bg-primary-gray-500 text-white self-start mx-4 rounded addColor" 
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        class="w-6"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M12 4.5v15m7.5-7.5h-15"
-        />
-      </svg>
-    </div>
-    <div class="w-full flex flex-col items-center gap-4 md:w-3/5 md:grid md:grid-rows-3 md:place-items-end" id="containerInput">
-      
-    </div>
-    <div class="w-full flex flex-col gap-4 mb-4" id="containerColores"></div>
     <div class="w-full flex justify-center gap-4">
-  <button id="aceptarBtnAT" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">Aceptar</button>
-  <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">Cancelar</button>
+  <button id="aceptarBtnEditTela" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">Aceptar</button>
+  <button id="cancelBtnEditTela" class="p-2 mb-2 text-white bg-red-600 rounded">Cancelar</button>
 </div>
   </div>`;
   innerModal.appendChild(form);
-  imprimirColor(listadoColores);
 }
 
 function imprimirTelaCrear() {
@@ -1453,10 +1530,10 @@ function imprimirTiposCrear() {
   />
 </div>
 <div class="w-full flex justify-center gap-4">
-  <button id="aceptarBtnType" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
+  <button id="aceptarBtnCrearType" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
     Aceptar
   </button>
-  <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">
+  <button id="cancelBtnCrearType" class="p-2 mb-2 text-white bg-red-600 rounded">
     Cancelar
   </button>
 </div>
@@ -1482,10 +1559,10 @@ function imprimirTiposEdit(name) {
   />
 </div>
 <div class="w-full flex justify-center gap-4">
-  <button id="aceptarBtnType" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
+  <button id="aceptarBtnEditType" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
     Aceptar
   </button>
-  <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">
+  <button id="cancelBtnEditType" class="p-2 mb-2 text-white bg-red-600 rounded">
     Cancelar
   </button>
 </div>
@@ -1494,6 +1571,190 @@ function imprimirTiposEdit(name) {
 }
 
 // Imprimir colores
+
+function imprimirColorModalCrear() {
+  innerModal.innerHTML = "";
+  const form = document.createElement("form");
+  form.id = "saveColorData";
+  form.classList.add("flex", "flex-col", "gap-4");
+  form.innerHTML = `
+  <div
+  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
+>
+  <label for="">Nombre del color</label>
+  <input
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+    id="inputName"
+    name="name"
+    type="text"
+  />
+</div>
+<div
+  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
+>
+  <label for="">Código hexadecimal</label>
+  <input
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+    id="inputHex"
+    name="codigoHex"
+    placeholder="Coloque el código así #FFFFFF"
+    type="text"
+  />
+</div>
+  <div
+  class="flex flex-col md:mx-4 items-center md:flex-row md:justify-between gap-2"
+>
+  <label for="inputPhoto">Foto del color</label>
+  <input class="hidden" type="file" name="inputPhoto" id="inputPhoto" />
+  <div class="flex flex-col lg:flex-row gap-4">
+  <span id="namePhoto"></span>
+  <div class="flex gap-4 items-center"> 
+  <label
+    for="inputPhoto"
+    class="cursor-pointer p-2 bg-primary-gray-500 text-white mx-4 rounded w-10"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-6"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"
+      />
+    </svg>
+  </label>
+  <div
+      id="clearInputFile"
+    class="cursor-pointer p-2 bg-red-600 text-white mx-4 rounded w-10"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="size-6"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+      />
+    </svg>
+  </div>
+
+  </div>
+  </div>
+</div>
+<div class="w-full flex justify-center gap-4">
+  <button id="aceptarBtnCrearColor" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
+    Aceptar
+  </button>
+  <button id="cancelBtnCrearColor" class="p-2 mb-2 text-white bg-red-600 rounded">
+    Cancelar
+  </button>
+</div>
+  `;
+  innerModal.appendChild(form);
+}
+
+function imprimirColorModalEdit(data) {
+  innerModal.innerHTML = "";
+  const form = document.createElement("form");
+  form.id = "saveColorData";
+  form.classList.add("flex", "flex-col", "gap-4");
+  form.innerHTML = `
+  <div
+  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
+>
+  <label for="">Nombre del color</label>
+  <input
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+    id="inputName"
+    name="name"
+    value="${data.name}"
+    type="text"
+  />
+</div>
+<div
+  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
+>
+  <label for="">Código hexadecimal</label>
+  <input
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+    id="inputHex"
+    name="codigoHex"
+    value="${data.codigoHex}"
+    placeholder="Coloque el código así #FFFFFF"
+    type="text"
+  />
+</div>
+  <div
+  class="flex flex-col md:mx-4 items-center md:flex-row md:justify-between gap-2"
+>
+  <label for="inputPhoto">Foto del color</label>
+  <input class="hidden" type="file" name="inputPhoto" id="inputPhoto" />
+  <div class="flex flex-col lg:flex-row gap-4">
+  <span id="namePhoto"></span>
+  <div class="flex gap-4 items-center"> 
+  <label
+    for="inputPhoto"
+    class="cursor-pointer p-2 bg-primary-gray-500 text-white mx-4 rounded w-10"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-6"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"
+      />
+    </svg>
+  </label>
+  <div
+      id="clearInputFile"
+    class="cursor-pointer p-2 bg-red-600 text-white mx-4 rounded w-10"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="size-6"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+      />
+    </svg>
+  </div>
+
+  </div>
+  </div>
+</div>
+<div class="w-full flex justify-center gap-4">
+  <button id="aceptarBtnEditColor" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
+    Aceptar
+  </button>
+  <button id="cancelBtnEditColor" class="p-2 mb-2 text-white bg-red-600 rounded">
+    Cancelar
+  </button>
+</div>
+  `;
+  innerModal.appendChild(form);
+}
 
 function imprimirColor(listColor) {
   const containerColores = document.querySelector("#containerColores");
@@ -1524,6 +1785,137 @@ function imprimirColor(listColor) {
     </div>`;
     containerColores.appendChild(divColor);
   });
+}
+
+function imprimirColores(listColores) {
+  containerMain.innerHTML = "";
+  spinner.classList.remove("loader");
+  imprimirAdd(3);
+  const containerInputS = document.querySelector("#containerInputS");
+  const inputSearch = document.querySelector("#inputSearch");
+  inputSearch.classList.add("cursor-default");
+  containerInputS.classList.add("opacity-0");
+  listColores.forEach((color) => {
+    const div = document.createElement("div");
+    div.classList.add(
+      "flex",
+      "justify-between",
+      "m-4",
+      "text-center",
+      "border-2",
+      "rounded",
+      "p-2",
+      "border-black"
+    );
+    const { name, codigoHex, id } = color;
+    if (color.photo) {
+      div.innerHTML = `
+    <div class="flex items-center gap-4">
+    <img src="../${color.photo}" class="w-12 h-12"></img>
+    <span>${name}</span>
+    </div>
+          <div class="text-white flex items-center gap-2">
+
+            <div class="p-1 bg-primary-gray-500 rounded cursor-pointer editColor" id="${id}">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 editColor"
+                id="${id}"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                />
+              </svg>
+            </div>
+            <div class="p-1 bg-red-600 rounded cursor-pointer deleteColor" id="${id}">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 deleteColor"
+                id="${id}"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                />
+              </svg>
+            </div>
+          </div>
+`;
+    } else {
+      div.innerHTML = `
+      <div class="flex gap-4">
+      <div style="background-color: ${codigoHex};" class="w-12 h-full"></div>
+      <span>${name}</span>
+      </div>
+            <div class="text-white flex gap-2">
+  
+              <div class="p-1 bg-primary-gray-500 rounded cursor-pointer editColor" id="${id}">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 editColor"
+                  id="${id}"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                  />
+                </svg>
+              </div>
+              <div class="p-1 bg-red-600 rounded cursor-pointer deleteColor" id="${id}">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 deleteColor"
+                  id="${id}"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                  />
+                </svg>
+              </div>
+            </div>
+  `;
+    }
+    containerMain.appendChild(div);
+  });
+}
+
+// Eliminar colores
+
+async function deleteColor(idColor) {
+  const confirmar = confirm("Está seguro de que quiere eliminar el color");
+  if (confirmar) {
+    try {
+      await axios.delete("/api/colores/eliminarColor", {
+        params: { id: idColor },
+      });
+      const listaColores = await getAllColors();
+      imprimirColores(listaColores);
+    } catch (error) {
+      alert("Hubo un error al eliminar el color");
+    }
+  }
 }
 
 // Imprimir videos
@@ -1678,9 +2070,29 @@ function imprimirAdd(typeAdd) {
             </svg>
           </div>
     `;
+  } else if (typeAdd == 3) {
+    containerAdd.innerHTML = `
+    <div
+            class="bg-primary-gray-500 rounded text-white m-4 p-1 w-auto cursor-pointer addColor"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </div>
+    `;
   } else {
-    containerAdd.innerHTML = "";
-    return;
+    return (containerAdd.innerHTML = "");
   }
 }
 
