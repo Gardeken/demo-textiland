@@ -1590,6 +1590,10 @@ video {
     padding-bottom: 3rem;
   }
 
+  .lg\:pb-16 {
+    padding-bottom: 4rem;
+  }
+
   .lg\:text-justify {
     text-align: justify;
   }

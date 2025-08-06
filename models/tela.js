@@ -11,7 +11,6 @@ const TelaSchema = new mongoose.Schema({
   usos_sugeridos: String,
   composicion: String,
   rendimiento: Number,
-  colores: String,
 });
 
 const Tela = mongoose.model("Tela", TelaSchema);

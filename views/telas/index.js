@@ -15,19 +15,9 @@ async function getTela() {
     },
   });
   const { data } = consulta;
-  let {
-    name,
-    photo,
-    price,
-    colores,
-    composicion,
-    rendimiento,
-    usos_sugeridos,
-    ancho,
-  } = data;
-  colores = JSON.parse(colores);
+  let { name, photo, price, composicion, rendimiento, usos_sugeridos, ancho } =
+    data;
 
-  console.log(colores);
   containerMain.innerHTML = `
   <img
         class="w-3/4 lg:w-[30rem] lg:place-self-start"
@@ -76,16 +66,31 @@ async function getTela() {
   `;
 
   const containerColores = document.querySelector("#containerColores");
-  colores.forEach((obj) => {
-    const span = document.createElement("span");
-    span.style = `background-color: ${obj.color};`;
-    span.classList.add(
-      "w-8",
-      "h-8",
-      "rounded-full",
-      "border-black",
-      "border-[1px]"
-    );
-    containerColores.appendChild(span);
+  const consultaColor = await axios.get("/api/colores/getAll");
+  const listaColores = consultaColor.data;
+  listaColores.forEach((obj) => {
+    if (obj.photo) {
+      const img = document.createElement("img");
+      img.src = `../${obj.photo}`;
+      img.classList.add(
+        "w-8",
+        "h-8",
+        "rounded-full",
+        "border-black",
+        "border-[1px]"
+      );
+      containerColores.appendChild(img);
+    } else {
+      const span = document.createElement("span");
+      span.style = `background-color: ${obj.codigoHex};`;
+      span.classList.add(
+        "w-8",
+        "h-8",
+        "rounded-full",
+        "border-black",
+        "border-[1px]"
+      );
+      containerColores.appendChild(span);
+    }
   });
 }

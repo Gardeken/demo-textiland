@@ -56,14 +56,11 @@ async function getAllTelas() {
   filtrarPorTelas(data);
   filtrarPrecio(data);
   filtrarNombre(data);
-  filtrarPorColor(data);
   if (typeTela) {
     const newList = data.filter((tela) => tela.type === Number(typeTela));
-    imprimirColores(newList);
     imprimirTelas(newList);
   } else {
     imprimirTelas(data);
-    imprimirColores(data);
   }
 }
 
@@ -119,71 +116,16 @@ function imprimirTelas(list) {
   });
 }
 
-function imprimirColores(list) {
-  containerColorTelas.innerHTML = "";
-  const listadoColoresTelas = [];
-  list.forEach((tela) => {
-    const { colores } = tela;
-    const listColores = JSON.parse(colores);
-    listColores.forEach((obj) => {
-      const validar = listadoColoresTelas.includes(obj.color);
-      if (!validar) {
-        const div = document.createElement("div");
-        const span = document.createElement("span");
-        const spanName = document.createElement("span");
-        div.classList.add("grid", "grid-cols-2", "gap-4", "w-full", "color");
-        span.classList.add(
-          "w-full",
-          "h-8",
-          "border-[1px]",
-          "border-black",
-          "cursor-pointer",
-          "hover:scale-110",
-          "duration-300"
-        );
-        span.style = `background-color: ${obj.color};`;
-        div.id = obj.color;
-        spanName.innerHTML = obj.colorName;
-        div.appendChild(span);
-        div.appendChild(spanName);
-        containerColorTelas.appendChild(div);
-        listadoColoresTelas.push(obj.color);
-      }
-    });
-  });
-}
-
 // Filtros
-
-function filtrarPorColor(list) {
-  containerColorTelas.addEventListener("click", (e) => {
-    if (e.target.closest(".color")) {
-      const bloqueColor = e.target.closest(".color");
-      const color = bloqueColor.id;
-      const newList = list.filter((tela) => {
-        const { colores } = tela;
-        const listadoColoresTelas = JSON.parse(colores);
-        const validarColor = listadoColoresTelas.some(
-          (obj) => obj.color === color
-        );
-        return validarColor;
-      });
-      imprimirTelas(newList);
-      imprimirColores(newList);
-    }
-  });
-}
 
 function filtrarPorTelas(list) {
   const containerIdTelas = document.querySelector("#containerIdTelas");
   containerIdTelas.addEventListener("click", (e) => {
     if (e.target.id == "0") {
       imprimirTelas(list);
-      imprimirColores(list);
     } else {
       const newList = list.filter((tela) => tela.type === e.target.id);
       imprimirTelas(newList);
-      imprimirColores(newList);
     }
   });
 }
@@ -201,10 +143,8 @@ function filtrarNombre(list) {
         return validarName;
       });
       imprimirTelas(newList);
-      imprimirColores(newList);
     } else {
       imprimirTelas(list);
-      imprimirColores(list);
     }
   });
 }
@@ -230,11 +170,9 @@ function filtrarPrecio(list) {
     if (lowPrice.value != "") {
       newList = filtroPrecio(lowPrice, highPrice, list);
       imprimirTelas(newList);
-      imprimirColores(newList);
     } else {
       newList = filtroPrecio(lowPrice, highPrice, list);
       imprimirTelas(newList);
-      imprimirColores(newList);
     }
   });
 
@@ -242,11 +180,9 @@ function filtrarPrecio(list) {
     if (highPrice.value != "") {
       newList = filtroPrecio(lowPrice, highPrice, list);
       imprimirTelas(newList);
-      imprimirColores(newList);
     } else {
       newList = filtroPrecio(lowPrice, highPrice, list);
       imprimirTelas(newList);
-      imprimirColores(newList);
     }
   });
 }
