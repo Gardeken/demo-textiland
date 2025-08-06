@@ -449,8 +449,8 @@ async function createTelaModal() {
       });
     }
   });
-  const cancelBtn = document.querySelector("#cancelBtn");
-  const aceptarBtnCT = document.querySelector("#aceptarBtnCT");
+  const cancelBtnCrearTela = document.querySelector("#cancelBtnCrearTela");
+  const aceptarBtnCrearTela = document.querySelector("#aceptarBtnCrearTela");
   const inputPhoto = document.querySelector("#inputPhoto");
   const clearInputFile = document.querySelector("#clearInputFile");
   clearInputFile.addEventListener("click", () => {
@@ -470,7 +470,7 @@ async function createTelaModal() {
     const namePhoto = document.querySelector("#namePhoto");
     namePhoto.innerHTML = inputPhoto.files[0].name;
   });
-  aceptarBtnCT.addEventListener("click", async (e) => {
+  aceptarBtnCrearTela.addEventListener("click", async (e) => {
     e.preventDefault();
     const saveTelaData = document.querySelector("#saveTelaData");
     const listaInput = saveTelaData.querySelectorAll("input");
@@ -486,9 +486,6 @@ async function createTelaModal() {
     if (!inputPhoto.value) {
       return alert("Debe agregar una imagen de la tela");
     }
-    if (listadoColoresNewTelaGlobal.length < 1) {
-      return alert("Debe agregar un color");
-    }
     const inputName = saveTelaData.querySelector("#inputName").value;
     const data = new FormData(saveTelaData);
     try {
@@ -498,9 +495,7 @@ async function createTelaModal() {
         },
       });
       if (!validarTela.data) {
-        const crear = await axios.post("/api/telas/crearTela", data, {
-          params: { listaColores: JSON.stringify(listadoColoresNewTelaGlobal) },
-        });
+        await axios.post("/api/telas/crearTela", data);
         const listadoTelas = await getAll();
         innerModal.innerHTML = "";
         bgBlack.classList.add("hidden");
@@ -516,7 +511,7 @@ async function createTelaModal() {
       alert("Hubo un error al crear la tela");
     }
   });
-  cancelBtn.addEventListener("click", (e) => {
+  cancelBtnCrearTela.addEventListener("click", (e) => {
     e.preventDefault();
     innerModal.innerHTML = "";
     bgBlack.classList.add("hidden");
@@ -1311,7 +1306,7 @@ function imprimirTelaCrear() {
     class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
     id="inputPrice"
     name="price"
-    type="number"
+    type="text"
   />
 </div>
 <div
@@ -1344,7 +1339,7 @@ function imprimirTelaCrear() {
     class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
     id="inputRendimiento"
     name="rendimiento"
-    type="number"
+    type="text"
   />
 </div>
 <div
@@ -1409,26 +1404,6 @@ function imprimirTelaCrear() {
   </div>
   </div>
 </div>
-<div class="flex flex-col items-center lg:items-start gap-4">
-  <label class="lg:mx-4" for="">Colores</label>
-  <div
-    class="cursor-pointer p-2 bg-primary-gray-500 text-white self-start mx-4 rounded addColor"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="w-6"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M12 4.5v15m7.5-7.5h-15"
-      />
-    </svg>
-  </div>
   <div
     class="w-full flex flex-col items-center gap-4 md:w-3/5 md:grid md:grid-rows-3 md:place-items-end"
     id="containerInput"
@@ -1436,10 +1411,10 @@ function imprimirTelaCrear() {
   <div class="w-full flex flex-col gap-4 mb-4" id="containerColores"></div>
 </div>
 <div class="w-full flex justify-center gap-4">
-  <button id="aceptarBtnCT" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
+  <button id="aceptarBtnCrearTela" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
     Aceptar
   </button>
-  <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">
+  <button id="cancelBtnCrearTela" class="p-2 mb-2 text-white bg-red-600 rounded">
     Cancelar
   </button>
 </div>

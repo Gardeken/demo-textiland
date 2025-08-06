@@ -132,9 +132,9 @@ telasRouter.post(
   async (req, res) => {
     const { path } = req.file;
     let { name, type, price, usos, composicion, rendimiento, ancho } = req.body;
-    const { listaColores } = req.query;
     const id = Date.now();
     price = price.replace(",", ".");
+    rendimiento = rendimiento.replace(",", ".");
     try {
       const newTela = new Tela();
       newTela.name = name;
@@ -143,13 +143,13 @@ telasRouter.post(
       newTela.price = Number(price);
       newTela.usos_sugeridos = usos;
       newTela.composicion = composicion;
-      newTela.rendimiento = rendimiento;
+      newTela.rendimiento = Number(rendimiento);
       newTela.photo = path;
-      newTela.colores = listaColores;
       newTela.id = id;
       await newTela.save();
       res.status(200).json({ msg: "La tela se ha creado con éxito" });
     } catch (error) {
+      console.log(error);
       res.status(400).json({ msg: "Hubo un error al crear la tela" });
     }
   }
