@@ -11,9 +11,9 @@
   </head>
   <body>
     <nav
-      class="sticky top-0 bg-primary-gray-500 text-white z-30 h-16 hidden lg:flex justify-between lg:justify-normal items-center"
+      class="sticky top-0 bg-primary-gray-500 text-white z-30 lg:z-[60] h-16 flex justify-between lg:justify-normal items-center"
     >
-      <a href="/" class="h-full w-24 hidden lg:block" name="Logo">
+      <a href="/" class="h-full w-24" name="Logo">
         <img
           class="p-1 w-full h-full object-contain"
           src="../src/logo.webp"
@@ -23,13 +23,19 @@
       <div class="flex justify-between h-full w-full">
         <div id="containerTypesT" class="flex">
           <a
+            href="/"
+            class="relative lg:flex lg:items-center hidden hover:bg-secondary-gray duration-300 px-10 cursor-pointer tipoTela containerTelas"
+          >
+            <span>Home</span>
+          </a>
+          <a
             href="/catalogo"
             class="relative lg:flex lg:items-center hidden hover:bg-secondary-gray duration-300 px-10 cursor-pointer tipoTela containerTelas"
           >
             <span>Catálogo</span>
           </a>
         </div>
-        <div class="hidden lg:flex">
+        <div class="lg:flex">
           <div class="relative">
             <span
               id="contactanosBtn"
@@ -160,7 +166,7 @@
       ></div>
       <aside
         id="lateralBar"
-        class="bg-white duration-300 shadow-2xl fixed top-0 bottom-0 overflow-y-scroll lg:relative z-50 w-3/5 lg:w-80 flex flex-col -translate-x-full lg:translate-x-0"
+        class="text-white bg-primary-orange-600 duration-300 shadow-2xl fixed top-0 bottom-0 overflow-y-scroll lg:relative z-50 w-3/5 lg:w-80 flex flex-col -translate-x-full lg:translate-x-0"
       >
         <div class="flex justify-end p-2 mt-2">
           <svg

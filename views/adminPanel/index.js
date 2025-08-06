@@ -164,13 +164,24 @@ function toggleLateralBtn() {
   xIcon.addEventListener("click", toggleLateral);
 }
 
-function eventoLateralTela(list) {
+async function eventoLateralTela() {
   const mostrarTelasBtn = document.querySelector("#mostrarTelasBtn");
-  mostrarTelasBtn.addEventListener("click", () => {
-    imprimirTelas(list);
-    filtrarNombre(list);
+  mostrarTelasBtn.addEventListener("click", async () => {
+    const listadoTelas = await getAll();
+    imprimirTelas(listadoTelas);
+    filtrarNombre(listadoTelas);
   });
   closeModalEvent();
+}
+
+function eventoLateralCerrarSesion() {
+  const mostrarCerrarSesionBtn = document.querySelector(
+    "#mostrarCerrarSesionBtn"
+  );
+  mostrarCerrarSesionBtn.addEventListener("click", () => {
+    localStorage.removeItem("usuario");
+    window.location.href = "/adminPanel";
+  });
 }
 
 function eventoLateralVideo() {
@@ -178,10 +189,11 @@ function eventoLateralVideo() {
   mostrarVideosBtn.addEventListener("click", imprimirVideos);
 }
 
-function eventoLateralType(list) {
+function eventoLateralType() {
   const mostrarTiposBtn = document.querySelector("#mostrarTiposBtn");
-  mostrarTiposBtn.addEventListener("click", () => {
-    imprimirTipos(list);
+  mostrarTiposBtn.addEventListener("click", async () => {
+    const listadoType = await getAllTypes();
+    imprimirTipos(listadoType);
   });
 }
 
@@ -219,6 +231,22 @@ async function loginModal() {
   });
   return closeModalEvent();
 }
+
+function closeModalEvent() {
+  closeModal.addEventListener("click", () => {
+    innerModal.innerHTML = "";
+    bgBlack.classList.add("hidden");
+    modal.classList.add("hidden");
+    body.classList.remove("overflow-hidden");
+  });
+}
+
+function openModalEvent() {
+  bgBlack.classList.remove("hidden");
+  modal.classList.remove("hidden");
+}
+
+// Eventos modal telas
 
 async function createTelaModal() {
   // crear tela
@@ -441,6 +469,7 @@ async function editTelaModal(idTela) {
   body.classList.add("overflow-hidden");
   const { data } = consulta;
   imprimirTelaEdit(data, nombreType.data.name);
+  const formCambio = document.querySelector("#formCambio");
   const typeInput = document.querySelector("#typeInput");
   const listadoTypes = await getAllTypes();
   listadoTypes.forEach((type) => {
@@ -495,31 +524,37 @@ async function editTelaModal(idTela) {
       });
     }
   });
+  const inputPhoto = document.querySelector("#inputPhoto");
+  const clearInputFile = document.querySelector("#clearInputFile");
+  inputPhoto.addEventListener("change", () => {
+    const tamaño = transformarBytes(inputPhoto.files[0].size);
+    const extension = validarExtension(inputPhoto.files[0].name, inputPhoto);
+    if (extension) {
+      return alert("Extensión inválida");
+    }
+    if (tamaño > 10) {
+      inputPhoto.value = "";
+      return alert("No puede mandar un archivo tan pesado");
+    }
+    const namePhoto = document.querySelector("#namePhoto");
+    namePhoto.innerHTML = inputPhoto.files[0].name;
+  });
+  clearInputFile.addEventListener("click", () => {
+    inputPhoto.value = "";
+    namePhoto.innerHTML = "";
+  });
   const aceptarBtnAT = document.querySelector("#aceptarBtnAT");
   const cancelBtn = document.querySelector("#cancelBtn");
-  aceptarBtnAT.addEventListener("click", async () => {
-    const nameInput = document.querySelector("#nameInput").value;
-    const composicionInput = document.querySelector("#composicionInput").value;
-    const priceInput = document
-      .querySelector("#priceInput")
-      .value.replace(",", ".");
-    const usosInput = document.querySelector("#usosInput").value;
-    const rendimientoInput = document
-      .querySelector("#rendimientoInput")
-      .value.replace(",", ".");
-    const anchoInput = document.querySelector("#anchoInput").value;
-    const newData = {};
-    newData.rendimiento = Number(rendimientoInput);
-    newData.type = typeInput.value;
-    newData.name = nameInput;
-    newData.ancho = anchoInput;
-    newData.composicion = composicionInput;
-    newData.price = Number(priceInput);
-    newData.usos_sugeridos = usosInput;
-    newData.colores = JSON.stringify(listadoColoresGlobal);
-    newData.id = data.id;
+  aceptarBtnAT.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const newData = new FormData(formCambio);
     try {
-      await axios.put("/api/telas/actualizarTela", newData);
+      await axios.delete("/api/telas/eliminarFotoTela", {
+        params: { idTela: idTela },
+      });
+      await axios.post("/api/telas/actualizarTela", newData, {
+        params: { id: idTela },
+      });
       innerModal.innerHTML = "";
       bgBlack.classList.add("hidden");
       modal.classList.add("hidden");
@@ -533,7 +568,8 @@ async function editTelaModal(idTela) {
       alert("No se pudo actualizar la tela");
     }
   });
-  cancelBtn.addEventListener("click", () => {
+  cancelBtn.addEventListener("click", (e) => {
+    e.preventDefault();
     innerModal.innerHTML = "";
     bgBlack.classList.add("hidden");
     modal.classList.add("hidden");
@@ -561,19 +597,7 @@ async function deleteTelaModal(idTela) {
   }
 }
 
-function closeModalEvent() {
-  closeModal.addEventListener("click", () => {
-    innerModal.innerHTML = "";
-    bgBlack.classList.add("hidden");
-    modal.classList.add("hidden");
-    body.classList.remove("overflow-hidden");
-  });
-}
-
-function openModalEvent() {
-  bgBlack.classList.remove("hidden");
-  modal.classList.remove("hidden");
-}
+// Eventos modal videos
 
 function cambioVideoModal(videoNum) {
   openModalEvent();
@@ -697,6 +721,8 @@ function cambioVideoModal(videoNum) {
     body.classList.remove("overflow-hidden");
   });
 }
+
+// Eventos modal tipos
 
 async function deleteTypeModal(code) {
   const confirmar = confirm(
@@ -851,19 +877,34 @@ async function imprimirMain(rol) {
         >
         <a
           class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarColoresBtn"
+          >Colores</a
+        >
+        <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
           id="mostrarVideosBtn"
           >Videos</a
+        >
+        <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarTextosBtn"
+          >Textos</a
+        >
+        <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarCerrarSesionBtn"
+          >Cerrar sesión</a
         >
     `;
     modaLogin.innerHTML = "";
     const listadoTelas = await getAll();
-    const listadoType = await getAllTypes();
     imprimirTelas(listadoTelas);
     filtrarNombre(listadoTelas);
     eventoLateralTela(listadoTelas);
     eventoLateralVideo();
+    eventoLateralCerrarSesion();
     eventoClickContainer();
-    eventoLateralType(listadoType);
+    eventoLateralType();
     main.addEventListener("click", (e) => {
       if (e.target.closest(".addTela")) {
         createTelaModal();
@@ -878,11 +919,22 @@ async function imprimirMain(rol) {
           id="mostrarVideosBtn"
           >Videos</a
         >
+        <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarTextosBtn"
+          >Textos</a
+        >
+        <a
+          class="duration-300 cursor-pointer hover:bg-secondary-gray p-5 w-full hover:text-white"
+          id="mostrarCerrarSesionBtn"
+          >Cerrar sesión</a
+        >
     `;
     modaLogin.innerHTML = "";
     imprimirVideos();
     closeModalEvent();
     eventoLateralVideo();
+    eventoLateralCerrarSesion();
     eventoClickContainer();
   } else {
     bgBlackLogin.classList.remove("hidden");
@@ -891,6 +943,8 @@ async function imprimirMain(rol) {
     localStorage.removeItem("usuario");
   }
 }
+
+// Imprimir Telas
 
 function imprimirTelas(listTelas) {
   containerMain.innerHTML = "";
@@ -980,137 +1034,19 @@ function imprimirTelas(listTelas) {
   });
 }
 
-function imprimirTipos(listType) {
-  const containerInputS = document.querySelector("#containerInputS");
-  const inputSearch = document.querySelector("#inputSearch");
-  inputSearch.classList.add("cursor-default");
-  containerInputS.classList.add("opacity-0");
-  containerMain.innerHTML = "";
-  imprimirAdd(2);
-  listType.forEach((type) => {
-    const div = document.createElement("div");
-    div.classList.add(
-      "flex",
-      "justify-between",
-      "m-4",
-      "text-center",
-      "border-2",
-      "rounded",
-      "p-2",
-      "border-black"
-    );
-    const { name, code } = type;
-    div.innerHTML = `<span>${name}</span>
-          <div class="text-white flex gap-2">
-            <div class="p-1 bg-primary-gray-500 rounded cursor-pointer editType" code="${code}">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 editType"
-                code="${code}"
-              >
-                <path
-                code="${code}
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                />
-              </svg>
-            </div>
-            <div class="p-1 bg-red-600 rounded cursor-pointer deleteType" code="${code}">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 deleteType"
-                code="${code}"
-              >
-                <path
-                code="${code}
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                />
-              </svg>
-            </div>
-          </div>
-`;
-    containerMain.appendChild(div);
-  });
-}
-
-function imprimirTiposCrear() {
-  innerModal.innerHTML = "";
-  const form = document.createElement("form");
-  form.classList.add("flex", "flex-col", "gap-4", "p-8");
-  form.innerHTML = `
-    <div
-  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
->
-  <label for="">Nombre</label>
-  <input
-    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
-    id="inputName"
-    name="name"
-    type="text"
-  />
-</div>
-<div class="w-full flex justify-center gap-4">
-  <button id="aceptarBtnType" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
-    Aceptar
-  </button>
-  <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">
-    Cancelar
-  </button>
-</div>
-  `;
-  innerModal.appendChild(form);
-}
-
-function imprimirTiposEdit(name) {
-  innerModal.innerHTML = "";
-  const form = document.createElement("form");
-  form.classList.add("flex", "flex-col", "gap-4", "p-8");
-  form.innerHTML = `
-    <div
-  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
->
-  <label for="">Nombre</label>
-  <input
-    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
-    id="inputName"
-    name="name"
-    value="${name}"
-    type="text"
-  />
-</div>
-<div class="w-full flex justify-center gap-4">
-  <button id="aceptarBtnType" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
-    Aceptar
-  </button>
-  <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">
-    Cancelar
-  </button>
-</div>
-  `;
-  innerModal.appendChild(form);
-}
-
 function imprimirTelaEdit(data, nameType) {
   innerModal.innerHTML = "";
   const listadoColores = JSON.parse(data.colores);
-  const div = document.createElement("div");
-  div.classList.add("flex", "flex-col", "gap-4", "p-8");
-  div.innerHTML = `<div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
+  const form = document.createElement("form");
+  form.id = "formCambio";
+  form.enctype = "multipart/form-data";
+  form.classList.add("flex", "flex-col", "gap-4", "p-8");
+  form.innerHTML = `<div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
     <label for="">Cambiar nombre</label>
     <input
       class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="nameInput"
+      name="name"
       value="${data.name}"
       type="text"
     />
@@ -1120,6 +1056,7 @@ function imprimirTelaEdit(data, nameType) {
     <input
       class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="composicionInput"
+      name="composicion"
       value="${data.composicion}"
       type="text"
     />
@@ -1129,6 +1066,7 @@ function imprimirTelaEdit(data, nameType) {
     <input
       class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="rendimientoInput"
+      name="rendimiento"
       value="${data.rendimiento}"
       type="number"
     />
@@ -1138,6 +1076,7 @@ function imprimirTelaEdit(data, nameType) {
     <input
       class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="anchoInput"
+      name="ancho"
       value="${data.ancho}"
       type="text"
     />
@@ -1147,6 +1086,7 @@ function imprimirTelaEdit(data, nameType) {
     <input
       class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="priceInput"
+      name="price"
       value="${data.price}"
       type="number"
     />
@@ -1156,17 +1096,69 @@ function imprimirTelaEdit(data, nameType) {
     <select
       class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="typeInput"
+      name="type"
       value="${data.type}"
       type="text"
     >
       <option value="${data.type}" selected disabled>${nameType}</option>
     </select>
   </div>
+  <div
+  class="flex flex-col md:mx-4 items-center md:flex-row md:justify-between gap-2"
+>
+  <label for="inputPhoto">Foto de la tela</label>
+  <input class="hidden" type="file" name="inputPhoto" id="inputPhoto" />
+  <div class="flex flex-col lg:flex-row gap-4">
+  <span id="namePhoto"></span>
+  <div class="flex gap-4 items-center"> 
+  <label
+    for="inputPhoto"
+    class="cursor-pointer p-2 bg-primary-gray-500 text-white mx-4 rounded w-10"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-6"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25"
+      />
+    </svg>
+  </label>
+  <div
+      id="clearInputFile"
+    class="cursor-pointer p-2 bg-red-600 text-white mx-4 rounded w-10"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="size-6"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+      />
+    </svg>
+  </div>
+
+  </div>
+  </div>
+</div>
   <div class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4">
     <label for="">Cambiar usos sugeridos</label>
     <input
       class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
       id="usosInput"
+      name="usos_sugeridos"
       value="${data.usos_sugeridos}"
       type="text"
     />
@@ -1200,39 +1192,8 @@ function imprimirTelaEdit(data, nameType) {
   <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">Cancelar</button>
 </div>
   </div>`;
-  innerModal.appendChild(div);
+  innerModal.appendChild(form);
   imprimirColor(listadoColores);
-}
-
-function imprimirColor(listColor) {
-  const containerColores = document.querySelector("#containerColores");
-  containerColores.innerHTML = "";
-  listColor.forEach((obj) => {
-    const divColor = document.createElement("div");
-    divColor.classList.add("w-full", "px-4", "flex", "justify-between");
-    divColor.innerHTML = `
-    <div class="w-3/4 text-center gap-2 flex items-center">
-    <span style="background-color: ${obj.color}" class="w-1/2 h-full border-black border-[1px]"></span>
-    <span>${obj.colorName}</span>
-    </div>
-    <div id-color="${obj.color}" class="p-2 bg-red-600 rounded cursor-pointer deleteColor">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        class="w-6 text-white"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-        />
-      </svg>
-    </div>`;
-    containerColores.appendChild(divColor);
-  });
 }
 
 function imprimirTelaCrear() {
@@ -1409,6 +1370,164 @@ function imprimirTelaCrear() {
   innerModal.appendChild(form);
 }
 
+// Imprimir tipos
+
+function imprimirTipos(listType) {
+  const containerInputS = document.querySelector("#containerInputS");
+  const inputSearch = document.querySelector("#inputSearch");
+  inputSearch.classList.add("cursor-default");
+  containerInputS.classList.add("opacity-0");
+  containerMain.innerHTML = "";
+  imprimirAdd(2);
+  listType.forEach((type) => {
+    const div = document.createElement("div");
+    div.classList.add(
+      "flex",
+      "justify-between",
+      "m-4",
+      "text-center",
+      "border-2",
+      "rounded",
+      "p-2",
+      "border-black"
+    );
+    const { name, code } = type;
+    div.innerHTML = `<span>${name}</span>
+          <div class="text-white flex gap-2">
+            <div class="p-1 bg-primary-gray-500 rounded cursor-pointer editType" code="${code}">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 editType"
+                code="${code}"
+              >
+                <path
+                code="${code}
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                />
+              </svg>
+            </div>
+            <div class="p-1 bg-red-600 rounded cursor-pointer deleteType" code="${code}">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 deleteType"
+                code="${code}"
+              >
+                <path
+                code="${code}
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                />
+              </svg>
+            </div>
+          </div>
+`;
+    containerMain.appendChild(div);
+  });
+}
+
+function imprimirTiposCrear() {
+  innerModal.innerHTML = "";
+  const form = document.createElement("form");
+  form.classList.add("flex", "flex-col", "gap-4", "p-8");
+  form.innerHTML = `
+    <div
+  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
+>
+  <label for="">Nombre</label>
+  <input
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+    id="inputName"
+    name="name"
+    type="text"
+  />
+</div>
+<div class="w-full flex justify-center gap-4">
+  <button id="aceptarBtnType" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
+    Aceptar
+  </button>
+  <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">
+    Cancelar
+  </button>
+</div>
+  `;
+  innerModal.appendChild(form);
+}
+
+function imprimirTiposEdit(name) {
+  innerModal.innerHTML = "";
+  const form = document.createElement("form");
+  form.classList.add("flex", "flex-col", "gap-4", "p-8");
+  form.innerHTML = `
+    <div
+  class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
+>
+  <label for="">Nombre</label>
+  <input
+    class="w-60 md:w-full bg-primary-gray-500 outline-none p-2 rounded text-white"
+    id="inputName"
+    name="name"
+    value="${name}"
+    type="text"
+  />
+</div>
+<div class="w-full flex justify-center gap-4">
+  <button id="aceptarBtnType" class="p-2 mb-2 text-white bg-primary-gray-500 rounded">
+    Aceptar
+  </button>
+  <button id="cancelBtn" class="p-2 mb-2 text-white bg-red-600 rounded">
+    Cancelar
+  </button>
+</div>
+  `;
+  innerModal.appendChild(form);
+}
+
+// Imprimir colores
+
+function imprimirColor(listColor) {
+  const containerColores = document.querySelector("#containerColores");
+  containerColores.innerHTML = "";
+  listColor.forEach((obj) => {
+    const divColor = document.createElement("div");
+    divColor.classList.add("w-full", "px-4", "flex", "justify-between");
+    divColor.innerHTML = `
+    <div class="w-3/4 text-center gap-2 flex items-center">
+    <span style="background-color: ${obj.color}" class="w-1/2 h-full border-black border-[1px]"></span>
+    <span>${obj.colorName}</span>
+    </div>
+    <div id-color="${obj.color}" class="p-2 bg-red-600 rounded cursor-pointer deleteColor">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 text-white"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+        />
+      </svg>
+    </div>`;
+    containerColores.appendChild(divColor);
+  });
+}
+
+// Imprimir videos
+
 function imprimirVideos() {
   containerMain.innerHTML = "";
   spinner.classList.remove("loader");
@@ -1512,6 +1631,8 @@ function imprimirVideos() {
           </div>
           `;
 }
+
+// Imprimir add
 
 function imprimirAdd(typeAdd) {
   const containerAdd = document.querySelector("#containerAdd");

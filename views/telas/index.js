@@ -54,7 +54,7 @@ async function getTela() {
             </div>
             <div class="flex flex-col">
             <span class="text-lg">Ancho</span>
-            <span>${ancho} mts</span>
+            <span>${ancho}</span>
             </div>
           </div>
           <div class="border-[1px] m-4 border-slate-600 w-3/4 lg:w-full"></div>

@@ -31,5 +31,6 @@ app.use("/api/telas", telasRouter);
 app.use("/api/videos", videosRouter);
 app.use("/api/users", userRouter);
 app.use("/api/types", typesRouter);
+app.use(express.urlencoded({ extended: true }));
 
 module.exports = app;
