@@ -313,7 +313,6 @@ async function createColorModal() {
       const listaColores = await getAllColors();
       imprimirColores(listaColores);
     } catch (error) {
-      console.log(error);
       alert("Hubo un error al crear el color");
     }
   });
@@ -579,7 +578,6 @@ async function viewTelaModal(idTela) {
   innerModal.appendChild(div);
   const containerColores = document.querySelector("#containerColores");
   listadoColores.forEach((obj) => {
-    console.log(obj);
     if (obj.photo) {
       const img = document.createElement("img");
       img.src = `../${obj.photo}`;
