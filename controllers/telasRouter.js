@@ -184,7 +184,7 @@ telasRouter.delete("/eliminarFotoTela", async (req, res) => {
       msg: "La foto se ha eliminado con éxito",
     });
   } catch (error) {
-    res.status(400).json("Hubo un error al eliminar la imagen de la tela");
+    res.status(200).json("No se consiguio la imagen");
   }
 });
 
