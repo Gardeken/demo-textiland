@@ -630,9 +630,11 @@ async function editTelaModal(idTela) {
     e.preventDefault();
     const newData = new FormData(formCambio);
     try {
-      await axios.delete("/api/telas/eliminarFotoTela", {
-        params: { idTela: idTela },
-      });
+      if (inputPhoto.value) {
+        await axios.delete("/api/telas/eliminarFotoTela", {
+          params: { idTela: idTela },
+        });
+      }
       await axios.post("/api/telas/actualizarTela", newData, {
         params: { id: idTela },
       });
