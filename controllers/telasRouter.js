@@ -2,50 +2,22 @@ const Tela = require("../models/tela");
 const telasRouter = require("express").Router();
 const multer = require("multer");
 const path = require("path");
+const uploadDir = path.join(__dirname, "..", "src", "catalogo");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "src/catalogo");
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    const exp = file.originalname.split(".");
-    cb(null, file.fieldname + "-" + Date.now() + "." + exp[1]);
-  },
-});
-const storageChange = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "src/catalogo");
-  },
-  filename: function (req, file, cb) {
-    const nombreFinal = req.nombreDeArchivoGuardado;
-    if (!nombreFinal) {
-      const nombreTemporal =
-        file.fieldname + "-" + Date.now() + path.extname(file.originalname);
-      return cb(null, nombreTemporal);
-    }
+    const nameF = req.body.name;
     const extension = path.extname(file.originalname);
-    cb(null, path.parse(nombreFinal).name + extension);
+    const filename = `${nameF
+      .replace("/", "-")
+      .replace(" ", "-")}-${Date.now()}${extension}`;
+    cb(null, filename);
   },
 });
 const upload = multer({ storage });
-const change = multer({ storage: storageChange });
 const fs = require("fs").promises;
-
-const buscarNombreDeArchivo = async (req, res, next) => {
-  if (!req.query.id) {
-    return res.status(400).send("Falta el ID del producto.");
-  }
-
-  const tela = await Tela.findOne({ id: req.query.id });
-
-  if (!tela) {
-    return res.status(404).send("Producto no encontrado.");
-  }
-  const { photo } = tela;
-  const listTelaPhoto = photo.split("/");
-  const TelaPhoto = listTelaPhoto[2];
-  req.nombreDeArchivoGuardado = TelaPhoto;
-  next();
-};
 
 // Consultar Telas
 
@@ -98,13 +70,13 @@ telasRouter.get("/getTelaNameValidar", async (req, res) => {
 
 telasRouter.post(
   "/actualizarTela",
-  buscarNombreDeArchivo,
-  change.single("inputPhoto"),
+  upload.single("inputPhoto"),
   async (req, res) => {
     const { id } = req.query;
     if (req.file) {
-      const photoPath = req.file.path.replace(/\\/g, "/");
-      req.body.photo = photoPath;
+      const nombreDeArchivo = req.file.filename;
+      const rutaRelativaParaDB = path.join("src", "catalogo", nombreDeArchivo);
+      req.body.photo = rutaRelativaParaDB;
       try {
         await Tela.findOneAndUpdate({ id: id }, req.body);
         res.status(200).send("Se ha actualizado la tela con foto");
@@ -130,11 +102,12 @@ telasRouter.post(
   "/crearTela",
   upload.single("inputPhoto"),
   async (req, res) => {
-    const { path } = req.file;
     let { name, type, price, usos, composicion, rendimiento, ancho } = req.body;
     const id = Date.now();
     price = price.replace(",", ".");
     rendimiento = rendimiento.replace(",", ".");
+    const nombreDeArchivo = req.file.filename;
+    const rutaRelativaParaDB = path.join("src", "catalogo", nombreDeArchivo);
     try {
       const newTela = new Tela();
       newTela.name = name;
@@ -144,7 +117,7 @@ telasRouter.post(
       newTela.usos_sugeridos = usos;
       newTela.composicion = composicion;
       newTela.rendimiento = Number(rendimiento);
-      newTela.photo = path;
+      newTela.photo = rutaRelativaParaDB;
       newTela.id = id;
       await newTela.save();
       res.status(200).json({ msg: "La tela se ha creado con éxito" });
@@ -161,12 +134,14 @@ telasRouter.delete("/eliminarTela", async (req, res) => {
   let { idTela } = req.query;
   try {
     const telaAeliminar = await Tela.findOne({ id: idTela });
-    await fs.unlink(telaAeliminar.photo);
+    const rutaAbsoluta = path.join(__dirname, "..", telaAeliminar.photo);
+    await fs.unlink(rutaAbsoluta);
     await Tela.findOneAndDelete({ id: idTela });
     res.status(200).json({
       msg: "La tela se ha eliminado con éxito",
     });
   } catch (error) {
+    console.log(error);
     res.status(400).json({
       msg: "Hubo un error al eliminar la tela",
     });
@@ -179,7 +154,8 @@ telasRouter.delete("/eliminarFotoTela", async (req, res) => {
   let { idTela } = req.query;
   try {
     const telaAeliminar = await Tela.findOne({ id: idTela });
-    await fs.unlink(telaAeliminar.photo);
+    const rutaAbsoluta = path.join(__dirname, "..", telaAeliminar.photo);
+    await fs.unlink(rutaAbsoluta);
     res.status(200).json({
       msg: "La foto se ha eliminado con éxito",
     });

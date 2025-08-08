@@ -14,24 +14,7 @@ const containerAsideBtns = document.querySelector("#containerAsideBtns");
 const main = document.querySelector("main");
 
 document.addEventListener("DOMContentLoaded", async () => {
-  let user = localStorage.getItem("usuario");
-  if (user) {
-    user = JSON.parse(user);
-    const { username, password, rol } = user;
-    try {
-      const usuario = await axios.get("/api/users/getAdmin", {
-        params: {
-          username,
-          password,
-        },
-      });
-      imprimirMain(rol);
-    } catch (error) {
-      alert(error.response.data.message);
-    }
-  } else {
-    loginModal();
-  }
+  loginModal();
 });
 
 async function getAll() {
@@ -234,22 +217,14 @@ async function loginModal() {
       return alert("No puede dejar los campos vacíos");
     }
     try {
-      const consulta = await axios.get("/api/users/getAdmin", {
-        params: {
-          username,
-          password,
-        },
+      const consulta = await axios.post("/api/users/getAdmin", {
+        username,
+        password,
       });
       bgBlackLogin.classList.add("hidden");
       modaLogin.classList.add("hidden");
       modaLogin.innerHTML = "";
       imprimirMain(consulta.data.rol);
-      const user = JSON.stringify({
-        username: username,
-        password: password,
-        rol: consulta.data.rol,
-      });
-      localStorage.setItem("usuario", user);
     } catch (error) {
       alert(error.response.data.message);
     }
@@ -338,6 +313,7 @@ async function editColorModal(idColor) {
   const cancelar = document.querySelector("#cancelBtnEditColor");
   const form = document.querySelector("#saveColorData");
   const inputPhoto = document.querySelector("#inputPhoto");
+  const deletePhoto = document.querySelector("#deletePhoto");
   body.classList.add("overflow-hidden");
   clearInputFile.addEventListener("click", () => {
     inputPhoto.value = "";
@@ -361,9 +337,11 @@ async function editColorModal(idColor) {
     const inputHex = document.querySelector("#inputHex");
     const newData = new FormData(form);
     try {
-      await axios.delete("/api/colores/eliminarFotoColor", {
-        params: { id: idColor },
-      });
+      if (inputPhoto.value || deletePhoto.checked) {
+        await axios.delete("/api/colores/eliminarFotoColor", {
+          params: { id: idColor },
+        });
+      }
       await axios.put("/api/colores/actualizarColor", newData, {
         params: { id: idColor },
       });
@@ -1640,7 +1618,7 @@ function imprimirColorModalEdit(data) {
   innerModal.innerHTML = "";
   const form = document.createElement("form");
   form.id = "saveColorData";
-  form.classList.add("flex", "flex-col", "gap-4");
+  form.classList.add("flex", "flex-col", "gap-4", "p-8");
   form.innerHTML = `
   <div
   class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
@@ -1667,7 +1645,22 @@ function imprimirColorModalEdit(data) {
     type="text"
   />
 </div>
-  <div
+<div
+  class="flex items-center justify-center md:grid md:grid-cols-2 md:mx-4 md:place-items-start gap-4"
+>
+  <label for="deletePhoto">Eliminar color</label>
+  <div class="flex">
+  <input
+    class="appearance-none bg-primary-gray-500 peer outline-none p-2 rounded text-white"
+    id="deletePhoto"
+    type="checkbox"
+  />
+  <svg class="absolute w-4 h-4 text-white pointer-events-none peer-checked:block hidden transition-opacity duration-200" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+  </svg>
+  </div>
+</div>
+<div
   class="flex flex-col md:mx-4 items-center md:flex-row md:justify-between gap-2"
 >
   <label for="inputPhoto">Foto del color</label>

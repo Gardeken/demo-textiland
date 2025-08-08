@@ -1,30 +1,32 @@
 const videosRouter = require("express").Router();
 const multer = require("multer");
+const path = require("path");
+const uploadDir = path.join(__dirname, "..", "src");
 const storageVideo1 = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "src");
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    const exp = file.originalname.split(".");
-    cb(null, "video-home-1" + "." + exp[1]);
+    const exp = path.extname(file.originalname);
+    cb(null, "video-home-1" + exp);
   },
 });
 const storageVideo2 = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "src");
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    const exp = file.originalname.split(".");
-    cb(null, "video-home-2" + "." + exp[1]);
+    const exp = path.extname(file.originalname);
+    cb(null, "video-home-2" + exp);
   },
 });
 const storageVideo3 = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "src");
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    const exp = file.originalname.split(".");
-    cb(null, "video-home-3" + "." + exp[1]);
+    const exp = path.extname(file.originalname);
+    cb(null, "video-home-3" + exp);
   },
 });
 const uploadVideo1 = multer({ storage: storageVideo1 });

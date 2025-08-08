@@ -1,14 +1,20 @@
 const Color = require("../models/color");
 const coloresRouter = require("express").Router();
 const multer = require("multer");
+const path = require("path");
 const fs = require("fs").promises;
+const uploadDir = path.join(__dirname, "..", "src", "colores");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "src/colores");
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    const exp = file.originalname.split(".");
-    cb(null, file.fieldname + "-" + Date.now() + "." + exp[1]);
+    const nameF = req.body.name;
+    const extension = path.extname(file.originalname);
+    const filename = `${nameF
+      .replace("/", "-")
+      .replace(" ", "-")}-${Date.now()}${extension}`;
+    cb(null, filename);
   },
 });
 const upload = multer({ storage });
@@ -18,17 +24,19 @@ coloresRouter.post(
   upload.single("inputPhoto"),
   async (req, res) => {
     try {
+      const nombreDeArchivo = req.file.filename;
+      const rutaRelativaParaDB = path.join("src", "colores", nombreDeArchivo);
       const newColor = new Color();
       newColor.name = req.body.name;
       newColor.codigoHex = req.body.codigoHex;
       newColor.id = Date.now();
       if (req.file) {
-        const { path } = req.file;
-        newColor.photo = path;
+        newColor.photo = rutaRelativaParaDB;
       }
       await newColor.save();
       res.status(200).json("El color se ha creado con éxito");
     } catch (error) {
+      console.log(error);
       res.status(400).json("Hubo un error al crear el color");
     }
   }
@@ -41,11 +49,14 @@ coloresRouter.put(
     const { id } = req.query;
     try {
       if (req.file) {
-        req.body.photo = req.file.path;
+        const nombreDeArchivo = req.file.filename;
+        const rutaRelativaParaDB = path.join("src", "colores", nombreDeArchivo);
+        req.body.photo = rutaRelativaParaDB;
       }
       await Color.findOneAndUpdate({ id: id }, req.body);
       res.status(200).json("El color se ha actualizado con éxito");
     } catch (error) {
+      console.log(error);
       res.status(400).json("Hubo un error al actualizar el color");
     }
   }
@@ -88,7 +99,8 @@ coloresRouter.delete("/eliminarFotoColor", async (req, res) => {
   const { id } = req.query;
   try {
     const color = await Color.findOne({ id: id });
-    await fs.unlink(color.photo);
+    const rutaAbsoluta = path.join(__dirname, "..", color.photo);
+    await fs.unlink(rutaAbsoluta);
     res.status(200).json("La foto se ha eliminado con éxito");
   } catch (error) {
     res.status(200).json("No se consiguió una foto");

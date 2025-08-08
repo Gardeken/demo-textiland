@@ -554,6 +554,10 @@ video {
   display: none;
 }
 
+.pointer-events-none {
+  pointer-events: none;
+}
+
 .fixed {
   position: fixed;
 }
@@ -649,11 +653,6 @@ video {
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
-}
-
-.my-8 {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 
 .mb-12 {
@@ -813,6 +812,10 @@ video {
   height: 1px;
 }
 
+.h-4 {
+  height: 1rem;
+}
+
 .max-h-\[75\%\] {
   max-height: 75%;
 }
@@ -913,6 +916,10 @@ video {
   width: 100%;
 }
 
+.w-4 {
+  width: 1rem;
+}
+
 .min-w-\[10rem\] {
   min-width: 10rem;
 }
@@ -961,6 +968,12 @@ video {
   cursor: pointer;
 }
 
+.appearance-none {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -979,6 +992,10 @@ video {
 
 .flex-wrap {
   flex-wrap: wrap;
+}
+
+.place-items-start {
+  place-items: start;
 }
 
 .place-items-end {
@@ -1029,12 +1046,12 @@ video {
   gap: 1.25rem;
 }
 
-.place-self-center {
-  place-self: center;
+.place-self-start {
+  place-self: start;
 }
 
-.self-start {
-  align-self: flex-start;
+.place-self-center {
+  place-self: center;
 }
 
 .self-end {
@@ -1199,9 +1216,9 @@ video {
   padding-bottom: 0.25rem;
 }
 
-.py-14 {
-  padding-top: 3.5rem;
-  padding-bottom: 3.5rem;
+.py-24 {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
 }
 
 .pb-4 {
@@ -1230,6 +1247,10 @@ video {
 
 .pt-6 {
   padding-top: 1.5rem;
+}
+
+.pb-20 {
+  padding-bottom: 5rem;
 }
 
 .text-center {
@@ -1317,8 +1338,18 @@ video {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
+.transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .duration-300 {
   transition-duration: 300ms;
+}
+
+.duration-200 {
+  transition-duration: 200ms;
 }
 
 .hover\:scale-110:hover {
@@ -1347,6 +1378,10 @@ video {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.peer:checked ~ .peer-checked\:block {
+  display: block;
 }
 
 @media (min-width: 640px) {
@@ -1418,6 +1453,10 @@ video {
     flex-direction: row;
   }
 
+  .md\:place-items-start {
+    place-items: start;
+  }
+
   .md\:place-items-end {
     place-items: end;
   }
@@ -1483,6 +1522,10 @@ video {
 
   .lg\:h-\[35rem\] {
     height: 35rem;
+  }
+
+  .lg\:h-\[38rem\] {
+    height: 38rem;
   }
 
   .lg\:max-h-96 {
@@ -1592,6 +1635,10 @@ video {
 
   .lg\:pb-16 {
     padding-bottom: 4rem;
+  }
+
+  .lg\:pt-16 {
+    padding-top: 4rem;
   }
 
   .lg\:text-justify {
