@@ -1650,7 +1650,7 @@ function imprimirColorModalEdit(data) {
 <div
   class="flex items-center justify-center md:grid md:grid-cols-2 md:mx-4 md:place-items-start gap-4"
 >
-  <label for="deletePhoto">Eliminar color</label>
+  <label for="deletePhoto">Eliminar foto del color</label>
   <div class="flex">
   <input
     class="appearance-none bg-primary-gray-500 peer outline-none p-2 rounded text-white"
