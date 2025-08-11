@@ -17,6 +17,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   loginModal();
 });
 
+function toggleSpinnerMain() {
+  const loader = document.querySelector("#loader");
+  loader.classList.toggle("hidden");
+  loader.classList.toggle("grid");
+}
+
 async function getAll() {
   const consulta = await axios.get("/api/telas/getAll");
   const { data } = consulta;
@@ -273,6 +279,7 @@ async function createColorModal() {
   });
   aceptar.addEventListener("click", async (e) => {
     e.preventDefault();
+    toggleSpinnerMain();
     const inputName = document.querySelector("#inputName");
     if (!inputName.value) {
       return alert("No puede dejar los campos vacios");
@@ -286,8 +293,10 @@ async function createColorModal() {
       modal.classList.add("hidden");
       body.classList.remove("overflow-hidden");
       const listaColores = await getAllColors();
+      toggleSpinnerMain();
       imprimirColores(listaColores);
     } catch (error) {
+      toggleSpinnerMain();
       alert("Hubo un error al crear el color");
     }
   });
@@ -334,6 +343,7 @@ async function editColorModal(idColor) {
   });
   aceptar.addEventListener("click", async (e) => {
     e.preventDefault();
+    toggleSpinnerMain();
     const inputHex = document.querySelector("#inputHex");
     const newData = new FormData(form);
     try {
@@ -351,8 +361,10 @@ async function editColorModal(idColor) {
       body.classList.remove("overflow-hidden");
       const listaColores = await getAllColors();
       imprimirColores(listaColores);
+      toggleSpinnerMain();
       alert("El color se ha actualizado con éxito");
     } catch (error) {
+      toggleSpinnerMain();
       alert("Hubo un error al actualizar la tela");
     }
   });
@@ -449,6 +461,7 @@ async function createTelaModal() {
   });
   aceptarBtnCrearTela.addEventListener("click", async (e) => {
     e.preventDefault();
+    toggleSpinnerMain();
     const saveTelaData = document.querySelector("#saveTelaData");
     const listaInput = saveTelaData.querySelectorAll("input");
     let validarInput = false;
@@ -478,13 +491,16 @@ async function createTelaModal() {
         bgBlack.classList.add("hidden");
         modal.classList.add("hidden");
         body.classList.remove("overflow-hidden");
+        toggleSpinnerMain();
         alert("La tela se ha creado con éxito");
         imprimirTelas(listadoTelas);
         filtrarNombre(listadoTelas);
       } else {
+        toggleSpinnerMain();
         alert("La tela ya existe");
       }
     } catch (error) {
+      toggleSpinnerMain();
       alert("Hubo un error al crear la tela");
     }
   });
@@ -628,6 +644,7 @@ async function editTelaModal(idTela) {
   const cancelBtnEditTela = document.querySelector("#cancelBtnEditTela");
   aceptarBtnEditTela.addEventListener("click", async (e) => {
     e.preventDefault();
+    toggleSpinnerMain();
     const newData = new FormData(formCambio);
     try {
       if (inputPhoto.value) {
@@ -645,9 +662,11 @@ async function editTelaModal(idTela) {
       const listadoTelas = await getAll();
       imprimirTelas(listadoTelas);
       filtrarNombre(listadoTelas);
+      toggleSpinnerMain();
       alert("La tela se ha actualizado con éxito");
       closeModalEvent();
     } catch (error) {
+      toggleSpinnerMain();
       alert("No se pudo actualizar la tela");
     }
   });
@@ -780,6 +799,7 @@ function cambioVideoModal(videoNum) {
   });
   aceptarVideo.addEventListener("click", async (e) => {
     e.preventDefault();
+    toggleSpinnerMain();
     if (!inputVideo.value) {
       return alert("Debe cargar una imagen");
     }
@@ -791,8 +811,10 @@ function cambioVideoModal(videoNum) {
       bgBlack.classList.add("hidden");
       modal.classList.add("hidden");
       body.classList.remove("overflow-hidden");
+      toggleSpinnerMain();
       alert("El video se ha cambiado con éxito");
     } catch (error) {
+      toggleSpinnerMain();
       alert("Hubo un error al cambiar el video");
     }
   });
@@ -844,6 +866,7 @@ async function createTypeModal() {
   const cancelar = document.querySelector("#cancelBtnCrearType");
   aceptar.addEventListener("click", async (e) => {
     e.preventDefault();
+    toggleSpinnerMain();
     const inputName = document.querySelector("#inputName");
     if (!inputName.value) {
       return alert("No puede dejar el campo vacío");
@@ -859,6 +882,7 @@ async function createTypeModal() {
         return alert("El tipo de tela ya existe");
       } else {
         await axios.post("/api/types/crearType", { name: inputName.value });
+        toggleSpinnerMain();
         alert("Se ha creado el tipo de tela con éxito");
         const listadoType = await getAllTypes();
         innerModal.innerHTML = "";
@@ -868,6 +892,7 @@ async function createTypeModal() {
         imprimirTipos(listadoType);
       }
     } catch (error) {
+      toggleSpinnerMain();
       alert("Hubo un error al crear el tipo de tela");
     }
   });
@@ -894,11 +919,13 @@ async function cambioNombreTypeModal(code) {
   const inputName = document.querySelector("#inputName");
   aceptar.addEventListener("click", async (e) => {
     e.preventDefault();
+    toggleSpinnerMain();
     if (!inputName.value) {
       return alert("No puede dejar el campo vacío");
     }
     try {
       await axios.put("/api/types/editarType", { code, name: inputName.value });
+      toggleSpinnerMain();
       alert("El tipo de tela se ha editado con éxito");
       const listadoType = await getAllTypes();
       innerModal.innerHTML = "";
@@ -907,6 +934,7 @@ async function cambioNombreTypeModal(code) {
       body.classList.remove("overflow-hidden");
       imprimirTipos(listadoType);
     } catch (error) {
+      toggleSpinnerMain();
       alert("Hubo un error al editar el tipo de tela");
     }
   });

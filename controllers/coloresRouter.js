@@ -24,13 +24,13 @@ coloresRouter.post(
   upload.single("inputPhoto"),
   async (req, res) => {
     try {
-      const nombreDeArchivo = req.file.filename;
-      const rutaRelativaParaDB = path.join("src", "colores", nombreDeArchivo);
       const newColor = new Color();
       newColor.name = req.body.name;
       newColor.codigoHex = req.body.codigoHex;
       newColor.id = Date.now();
       if (req.file) {
+        const nombreDeArchivo = req.file.filename;
+        const rutaRelativaParaDB = path.join("src", "colores", nombreDeArchivo);
         newColor.photo = rutaRelativaParaDB;
       }
       await newColor.save();
