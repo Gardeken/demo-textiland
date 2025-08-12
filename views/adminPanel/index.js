@@ -1278,7 +1278,7 @@ function imprimirTelaCrear() {
   innerModal.innerHTML = "";
   const form = document.createElement("form");
   form.id = "saveTelaData";
-  form.classList.add("flex", "flex-col", "gap-4");
+  form.classList.add("flex", "flex-col", "gap-4", "p-8");
   form.innerHTML = `
   <div
   class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
@@ -1557,7 +1557,7 @@ function imprimirColorModalCrear() {
   innerModal.innerHTML = "";
   const form = document.createElement("form");
   form.id = "saveColorData";
-  form.classList.add("flex", "flex-col", "gap-4");
+  form.classList.add("flex", "flex-col", "gap-4", "p-8");
   form.innerHTML = `
   <div
   class="flex flex-col md:grid md:grid-cols-2 md:mx-4 items-center md:items-start gap-4"
